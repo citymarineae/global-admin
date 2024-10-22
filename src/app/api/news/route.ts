@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       try {
         // Create a unique filename
         const filename = `${Date.now()}-${image.name || "image"}`;
-        const dropboxPath = `/team/${filename}`;
+        const dropboxPath = `/news/${filename}`;
 
         // Upload to Dropbox
         imagePath = await uploadToDropbox(image, dropboxPath);
@@ -99,7 +99,7 @@ export async function PUT(req: NextRequest) {
       try {
         // Create a unique filename
         const filename = `${Date.now()}-${newImage.name || "image"}`;
-        const dropboxPath = `/team/${filename}`;
+        const dropboxPath = `/news/${filename}`;
 
         // Upload to Dropbox
         const imagePath = await uploadToDropbox(newImage, dropboxPath);
