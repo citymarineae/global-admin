@@ -7,6 +7,12 @@ module.exports = {
         port: "",
         pathname: "/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "dl.dropboxusercontent.com",
+        port: "",
+        pathname: "/scl/**",
+      },
     ],
   },
 };
