@@ -1,8 +1,8 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import AddMemberPage from "../../add-member/page";
+import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
+import AddMember from "@/components/AddMember";
 
 const EditMemberPage = () => {
   const { id } = useParams();
@@ -32,7 +32,11 @@ const EditMemberPage = () => {
     return <div>Loading...</div>;
   }
 
-  return <AddMemberPage initialData={memberData} isEditing={true} />;
+  return (
+    <AdminPanelLayout currentPage="/admin/team">
+      <AddMember initialData={memberData} isEditing={true} />
+    </AdminPanelLayout>
+  );
 };
 
 export default EditMemberPage;

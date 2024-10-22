@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import AddNewsPage from "../../add-news/page";
+import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
+import AddNews from "@/components/AddNews";
 
 const EditNewsPage = () => {
   const { id } = useParams();
@@ -32,7 +33,11 @@ const EditNewsPage = () => {
     return <div>Loading...</div>;
   }
 
-  return <AddNewsPage initialData={newsData} isEditing={true} />;
+  return (
+    <AdminPanelLayout currentPage="/admin/news">
+      <AddNews initialData={newsData} isEditing />
+    </AdminPanelLayout>
+  );
 };
 
 export default EditNewsPage;

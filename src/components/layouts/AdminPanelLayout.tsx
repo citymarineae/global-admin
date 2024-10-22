@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -14,33 +14,33 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 
-const navigation = [
+const navigationItems = [
   {
     name: "Home",
     href: "/admin/dashboard",
     icon: HomeIcon,
-    current: window?.location?.pathname === "/admin/dashboard",
+    current: true,
   },
   {
     name: "About Us",
     href: "/admin/about",
     icon: IdentificationIcon,
-    current: window?.location?.pathname === "/admin/about",
+    current: false,
   },
-  { name: "Our Team", href: "/admin/team", icon: UsersIcon, current: window?.location?.pathname === "/admin/team" },
+  { name: "Our Team", href: "/admin/team", icon: UsersIcon, current: false },
   {
     name: "Our Sectors",
     href: "/admin/sectors",
     icon: Square2StackIcon,
-    current: window?.location?.pathname === "/admin/sectors",
+    current: false,
   },
   {
     name: "Claims",
     href: "/admin/claims",
     icon: DocumentDuplicateIcon,
-    current: window?.location?.pathname === "/admin/claims",
+    current: false,
   },
-  { name: "News", href: "/admin/news", icon: NewspaperIcon, current: window?.location?.pathname === "/admin/news" },
+  { name: "News", href: "/admin/news", icon: NewspaperIcon, current: false },
 ];
 
 function classNames(...classes: string[]): string {
@@ -49,10 +49,22 @@ function classNames(...classes: string[]): string {
 
 interface AdminPanelLayoutProps {
   children: React.ReactNode;
+  currentPage: string;
 }
 
-export default function AdminPanelLayout({ children }: AdminPanelLayoutProps) {
+export default function AdminPanelLayout({ children, currentPage }: AdminPanelLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [navigation, setNavigation] = useState(navigationItems);
+
+  useEffect(() => {
+    if (currentPage) {
+      setNavigation(
+        navigationItems.map((item) =>
+          item.href === currentPage ? { ...item, current: true } : { ...item, current: false }
+        )
+      );
+    }
+  }, [currentPage]);
 
   return (
     <>
