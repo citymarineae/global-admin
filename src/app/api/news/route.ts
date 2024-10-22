@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import News from "@/models/News";
-import { writeFile } from "fs/promises";
-import path from "path";
+import { uploadToDropbox } from "@/lib/connectDropbox";
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,21 +19,23 @@ export async function POST(req: NextRequest) {
     }
 
     let imagePath = "";
+    if (image && image instanceof File) {
+      try {
+        // Create a unique filename
+        const filename = `${Date.now()}-${image.name || "image"}`;
+        const dropboxPath = `/team/${filename}`;
 
-    if (image && image instanceof Blob) {
-      // Handle image upload
-      const bytes = await image.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+        // Upload to Dropbox
+        imagePath = await uploadToDropbox(image, dropboxPath);
 
-      // Create a unique filename
-      const filename = `${Date.now()}-${image.name || "image"}`;
-      imagePath = path.join(process.cwd(), "public", "images", "news", filename);
-
-      // Save the file
-      await writeFile(imagePath, buffer);
-      imagePath = `/images/news/${filename}`; // Save the relative path
+        console.log("Image uploaded to Dropbox:", imagePath);
+      } catch (error) {
+        console.error("Error uploading to Dropbox:", error);
+        return NextResponse.json({ error: "Error uploading image" }, { status: 500 });
+      }
     } else {
       console.log("No valid image file received");
+      return NextResponse.json({ error: "Invalid image file" }, { status: 400 });
     }
     // Save to database
     const news = new News({
@@ -90,6 +91,32 @@ export async function PUT(req: NextRequest) {
   try {
     const formData = await req.formData();
     const updatedData = Object.fromEntries(formData);
+
+    // Check if a new image is provided
+    const newImage = formData.get("image") as File | null;
+
+    if (newImage && newImage instanceof File) {
+      try {
+        // Create a unique filename
+        const filename = `${Date.now()}-${newImage.name || "image"}`;
+        const dropboxPath = `/team/${filename}`;
+
+        // Upload to Dropbox
+        const imagePath = await uploadToDropbox(newImage, dropboxPath);
+
+        console.log("New image uploaded to Dropbox:", imagePath);
+
+        // Update the image path in the updatedData
+        updatedData.image = imagePath;
+      } catch (error) {
+        console.error("Error uploading new image to Dropbox:", error);
+        return NextResponse.json({ error: "Error uploading new image" }, { status: 500 });
+      }
+    } else {
+      // If no new image is provided, remove the image field from updatedData
+      // to prevent overwriting the existing image path with null
+      delete updatedData.image;
+    }
 
     const news = await News.findByIdAndUpdate(id, updatedData, { new: true });
     if (!news) {
