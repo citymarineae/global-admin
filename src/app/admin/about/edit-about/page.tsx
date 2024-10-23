@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import AdminPanelLayout from '@/components/layouts/AdminPanelLayout'
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 
@@ -27,8 +27,7 @@ const EditAbout = () => {
     const {
         register,
         handleSubmit,
-        control,
-        formState: { errors },
+        formState: {},
         setValue,
     } = useForm<FormData>();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,7 +70,7 @@ const EditAbout = () => {
         }
 
         fetchAboutData()
-    }, [])
+    }, [setValue])
 
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
