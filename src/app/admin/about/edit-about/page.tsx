@@ -117,6 +117,7 @@ const EditAbout = () => {
         formData.append("content", data.content);
         formData.append("contentHeading", data.contentHeading);
 
+        
         if (imageFile) {
             formData.append("image", imageFile);
         }

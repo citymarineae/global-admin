@@ -37,7 +37,7 @@ export async function PUT(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
 
-        console.log(updatedData)
+        // console.log("UpdateData",updatedData)
 
         // Check if a new image is provided
         const newImage = formData.get("image") as File | null;
@@ -62,14 +62,15 @@ export async function PUT(req: NextRequest) {
         } else {
             // If no new image is provided, remove the image field from updatedData
             // to prevent overwriting the existing image path with null
-            delete updatedData.image;
+            // making the image to empty string if no image is present
+            updatedData.image = ""
         }
 
 
         //todo - need to change this
-
-        const news = await About.findByIdAndUpdate(id, updatedData, { new: true });
-        if (!news) {
+        console.log("update data final",updatedData)
+        const about = await About.findByIdAndUpdate(id, updatedData, { new: true });
+        if (!about) {
             return NextResponse.json({ error: "About not found" }, { status: 404 });
         }
         return NextResponse.json({ message: "About updated successfully"},{status:200});
