@@ -133,7 +133,7 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
             <div className="flex h-16 shrink-0 items-center">
-              <Image alt="Your Company" src="/logo/logo.svg" className="h-8 w-auto" height={10} width={10} />
+              <Image alt="Your Company" src="/logo/logo-dark.svg" className="h-8 w-auto" height={10} width={10} />
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
