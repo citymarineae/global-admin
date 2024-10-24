@@ -1,34 +1,33 @@
-"use client";
-import { useCallback, useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import dynamic from "next/dynamic";
-import { format } from "date-fns";
-import { useRouter } from "next/navigation";
+"use client"
 
+import React, { useEffect } from 'react'
+import Link from 'next/link'
+import { useCallback, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import Image from 'next/image'
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
-import Image from "next/image";
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 
 type FormData = {
-  title: string;
-  brief: string;
-  content: string;
-  date: string;
-};
-
-interface AddNewsPageProps {
-  initialData?: {
-    _id: string;
-    title: string;
-    brief: string;
-    content: string;
-    image?: string;
-    date: string;
-  };
-  isEditing?: boolean;
+  pageHeading: string
+  contentHeading: string
+  content: string
 }
 
-export default function AddNews({ initialData, isEditing = false }: AddNewsPageProps) {
+type ClaimsData = {
+  _id:string
+  pageHeading:string
+  contentHeading:string
+  content:string
+  image:string
+}
+
+const ClaimsSection = ({ editMode }: { editMode?: boolean }) => {
+  
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
@@ -36,23 +35,104 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
     formState: { errors },
     setValue,
   } = useForm<FormData>();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
-  const router = useRouter();
+  const [loading,setLoading] = useState(true)
+  const [claimsData, setClaimsData] = useState<ClaimsData | null>(null)
 
   useEffect(() => {
-    if (initialData) {
-      setValue("title", initialData.title);
-      setValue("brief", initialData.brief);
-      setValue("content", initialData.content);
-      setValue("date", format(new Date(initialData.date), "yyyy-MM-dd"));
-      if (initialData.image) {
-        setPreviewImage(initialData.image as string);
+    const fetchClaimsData = async () => {
+      try {
+        const response = await fetch(`/api/claims`);
+        if (response.ok) {
+          const data = await response.json();
+          setClaimsData(data[0]);
+          setValue("pageHeading",data[0].pageHeading)
+          setValue("contentHeading",data[0].contentHeading)
+          setValue("content",data[0].content)
+          if (data[0].image) {
+            setPreviewImage(data[0].image as string);
+          }
+        } else {
+          console.error("Failed to fetch claims data");
+        }
+      } catch (error) {
+        console.error("Error fetching claims data:", error);
+      }finally{
+        setLoading(false)
       }
+    };
+
+    fetchClaimsData();
+  }, [setValue]);
+
+
+
+  const onDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      // Validate the image file type
+      const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+      if (!validImageTypes.includes(file.type)) {
+        setImageError("Please select an image file (JPEG, PNG, or GIF)");
+        return;
+      }
+
+      // Validate the image file size
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        setImageError("Image file size must not exceed 10MB");
+        return;
+      }
+
+      setImageFile(file);
+
+      setImageError(null); // Reset error message if there was one;
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }, [initialData, setValue]);
+  }, []);
+
+
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.append("pageHeading", data.pageHeading);
+    formData.append("contentHeading", data.contentHeading);
+    formData.append("content", data.content);
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    try {
+      const url = `/api/claims?id=${claimsData?._id}`;
+      const method = "PUT";
+      const response = await fetch(url, {
+        method: method,
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("updated claims successfully")
+        router.push('/admin/claims')
+      } else {
+        throw new Error("Failed to save claims");
+      }
+    } catch (error) {
+      console.error("Error adding claims:", error);
+      alert("Failed to update claims. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -88,99 +168,58 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
     }
   };
 
-  const onDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      // Validate the image file type
-      const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-      if (!validImageTypes.includes(file.type)) {
-        setImageError("Please select an image file (JPEG, PNG, or GIF)");
-        return;
-      }
+  const editorModule = {
+    toolbar : editMode ? editMode : false
+  }
 
-      // Validate the image file size
-      const maxSize = 10 * 1024 * 1024; // 10MB
-      if (file.size > maxSize) {
-        setImageError("Image file size must not exceed 10MB");
-        return;
-      }
-
-      setImageFile(file);
-
-      setImageError(null); // Reset error message if there was one;
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  }, []);
-  
-  const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("brief", data.brief);
-    formData.append("content", data.content);
-    formData.append("date", data.date);
-
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
-
-    try {
-      const url = isEditing ? `/api/news?id=${initialData?._id}` : "/api/news";
-      const method = isEditing ? "PUT" : "POST";
-      const response = await fetch(url, {
-        method: method,
-        body: formData,
-      });
-
-      if (response.ok) {
-        router.push("/admin/news"); // Redirect to news list page
-      } else {
-        throw new Error("Failed to save news");
-      }
-    } catch (error) {
-      console.error("Error adding news:", error);
-      alert("Failed to add news. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">{isEditing ? `Edit ${initialData?.title}` : "Add New Article"}</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 lg:flex lg:space-x-8 lg:space-y-0">
+    <main className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">City Marine Claims Page</h1>
+        {!editMode && <Link
+          href="/admin/claims/edit-claims"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Edit Claims
+        </Link>}
+      </div>
+
+      {loading ? (
+        <div>Loading content....</div>
+      ) : (
+        <form className="space-y-6 lg:flex lg:space-x-8 lg:space-y-0" onSubmit={handleSubmit(onSubmit)}>
         {/* Left column */}
         <div className="lg:w-2/3 space-y-6">
+
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-              Title
+              Page title
             </label>
             <input
-              {...register("title", { required: "Title is required" })}
               type="text"
               id="title"
+              readOnly={!editMode}
               className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              {...register("pageHeading", { required: "Page title is required" })}
             />
-            {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
+            {errors.pageHeading && <p className="mt-1 text-sm text-red-600">{errors.pageHeading.message}</p>}
           </div>
 
           <div>
-            <label htmlFor="brief" className="block text-sm font-medium text-gray-700">
-              Brief Description
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Content heading
             </label>
-            <textarea
-              {...register("brief", { required: "Brief description is required" })}
-              id="brief"
-              rows={3}
+            <input
+              type="text"
+              id="title"
+              {...register("contentHeading", { required: "Title is required" })}
+              readOnly={!editMode}
               className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            ></textarea>
-            {errors.brief && <p className="mt-1 text-sm text-red-600">{errors.brief.message}</p>}
+            />
+            {errors.contentHeading && <p className="mt-1 text-sm text-red-600">{errors.contentHeading.message}</p>}
           </div>
+
 
           <div>
             <label htmlFor="content" className="block text-sm font-medium text-gray-700">
@@ -191,16 +230,18 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
               control={control}
               rules={{ required: "Content is required" }}
               render={({ field }) => (
-                <ReactQuill theme="snow" value={field.value} onChange={field.onChange} className="mt-1" />
+                <ReactQuill theme="snow" value={field.value} onChange={field.onChange} className="mt-1" readOnly={!editMode} modules={editorModule}/>
               )}
             />
             {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>}
           </div>
+
+
         </div>
 
         {/* Right column */}
         <div className="lg:w-1/3 space-y-6">
-          <div>
+        <div>
             <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
               Image
             </label>
@@ -213,7 +254,7 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
               {previewImage ? (
                 <div className="relative w-full h-full">
                   <Image src={previewImage} alt="Preview" layout="fill" objectFit="cover" />
-                  <button
+                  {editMode && <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -229,11 +270,11 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
                         clipRule="evenodd"
                       />
                     </svg>
-                  </button>
+                  </button>}
                 </div>
               ) : (
                 <>
-                  <svg
+                  {editMode && <svg
                     className="mx-auto h-12 w-12 text-gray-400"
                     stroke="currentColor"
                     fill="none"
@@ -246,40 +287,31 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
-                  </svg>
-                  <p className="mt-1 text-sm text-gray-600">Drag and drop an image here, or click to select a file</p>
+                  </svg>}
+                  <p className="mt-1 text-sm text-gray-600">{editMode ? "Drag and drop an image here, or click to select a file" : "No image to display"}</p>
                 </>
               )}
-              <input type="file" id="image" accept="image/*" className="hidden" onChange={handleImageChange} />
+              {editMode && <input type="file" id="image" accept="image/*" className="hidden" onChange={handleImageChange} />}
             </div>
             {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
           </div>
 
-          <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-              Publication Date
-            </label>
-            <input
-              {...register("date", { required: "Publication date is required" })}
-              type="date"
-              id="date"
-              defaultValue={format(new Date(), "yyyy-MM-dd")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>}
-          </div>
-
-          <div>
+          {editMode && <div>
             <button
               type="submit"
               disabled={isSubmitting}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {isSubmitting ? (isEditing ? "Updating..." : "Adding...") : isEditing ? "Update News" : "Add News"}
+              {isSubmitting ? "Updating..." : "Update Claims"}
             </button>
-          </div>
+          </div>}
+
         </div>
       </form>
-    </div>
-  );
+      )}
+      
+    </main>
+  )
 }
+
+export default ClaimsSection
