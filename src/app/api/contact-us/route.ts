@@ -3,10 +3,9 @@ import ContactUs from "@/models/ContactUs";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     await dbConnect(); 
     try {
-  
         // Fetch contact
         const contact = await ContactUs.find();
 

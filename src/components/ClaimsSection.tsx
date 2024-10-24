@@ -67,7 +67,7 @@ const ClaimsSection = ({ editMode }: { editMode?: boolean }) => {
     };
 
     fetchClaimsData();
-  }, []);
+  }, [setValue]);
 
 
 

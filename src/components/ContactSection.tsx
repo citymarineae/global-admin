@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 type FormData = {
@@ -57,7 +57,7 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
         };
 
         fetchContactData();
-    }, []);
+    }, [setValue]);
 
 
     const [previewMap, setPreviewMap] = useState(false)

@@ -3,10 +3,9 @@ import dbConnect from "@/lib/dbConnect";
 import Claims from "@/models/Claims";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     await dbConnect(); 
     try {
-  
         // Fetch claims
         const claims = await Claims.find();
 
