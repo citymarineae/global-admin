@@ -17,7 +17,12 @@ export async function middleware(request: NextRequest) {
   if (isApiRoute) {
     // Allow GET requests without authentication
     if (request.method === "GET") {
-      return NextResponse.next();
+      // Add CORS headers for GET requests
+      const response = NextResponse.next();
+      response.headers.set("Access-Control-Allow-Origin", "*");
+      response.headers.set("Access-Control-Allow-Methods", "GET");
+      response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      return response;
     }
 
     if (request.nextUrl.pathname === "/api/login") {
