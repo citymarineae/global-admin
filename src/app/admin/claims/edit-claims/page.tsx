@@ -1,16 +1,13 @@
+import ClaimsSection from '@/components/ClaimsSection'
 import AdminPanelLayout from '@/components/layouts/AdminPanelLayout'
 import React from 'react'
-import ClaimsSection from '@/components/ClaimsSection'
 
-
-const Claims = () => {
-
+const EditClaims = () => {
   return (
     <AdminPanelLayout currentPage="/admin/claims">
-        <ClaimsSection/>
+        <ClaimsSection editMode/>
     </AdminPanelLayout>
-    
   )
 }
 
-export default Claims
+export default EditClaims

@@ -11,6 +11,7 @@ import {
   Square2StackIcon,
   UsersIcon,
   XMarkIcon,
+  PhoneIcon
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 
@@ -41,6 +42,7 @@ const navigationItems = [
     current: false,
   },
   { name: "News", href: "/admin/news", icon: NewspaperIcon, current: false },
+  { name: "Contact Us", href: "/admin/contact-us", icon: PhoneIcon, current: false },
 ];
 
 function classNames(...classes: string[]): string {
