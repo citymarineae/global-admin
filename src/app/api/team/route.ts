@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import { uploadToDropbox } from "@/lib/connectDropbox";
 import Team from "@/models/Team";
+import { formatDbResponse } from "@/lib/formatDbResponse";
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,7 +53,10 @@ export async function POST(req: NextRequest) {
 
     await team.save();
 
-    return NextResponse.json({ message: "Team member added successfully", team }, { status: 201 });
+    return NextResponse.json(
+      { message: "Team member added successfully", team: formatDbResponse(team) },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating team member:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -72,11 +76,11 @@ export async function GET(req: NextRequest) {
       if (!team) {
         return NextResponse.json({ error: "Team member not found" }, { status: 404 });
       }
-      return NextResponse.json(team);
+      return NextResponse.json(formatDbResponse(team));
     } else {
       // Fetch all news items
       const members = await Team.find().sort({ date: -1 }); // Sort by date, newest first
-      return NextResponse.json(members);
+      return NextResponse.json(formatDbResponse(members));
     }
   } catch (error) {
     console.error("Error fetching team:", error);
@@ -126,7 +130,7 @@ export async function PUT(req: NextRequest) {
     if (!member) {
       return NextResponse.json({ error: "Member not found" }, { status: 404 });
     }
-    return NextResponse.json({ message: "Member updated successfully", member });
+    return NextResponse.json({ message: "Member updated successfully", member: formatDbResponse(member) });
   } catch (error) {
     console.error("Error updating member:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

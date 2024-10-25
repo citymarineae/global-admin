@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import News from "@/models/News";
 import { uploadToDropbox } from "@/lib/connectDropbox";
+import { formatDbResponse } from "@/lib/formatDbResponse";
 
 export async function POST(req: NextRequest) {
   try {
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     await news.save();
 
-    return NextResponse.json({ message: "News created successfully", news }, { status: 201 });
+    return NextResponse.json({ message: "News created successfully", news: formatDbResponse(news) }, { status: 201 });
   } catch (error) {
     console.error("Error creating news:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -72,7 +73,7 @@ export async function GET(req: NextRequest) {
     } else {
       // Fetch all news items
       const news = await News.find().sort({ date: -1 }); // Sort by date, newest first
-      return NextResponse.json(news);
+      return NextResponse.json(formatDbResponse(news));
     }
   } catch (error) {
     console.error("Error fetching news:", error);
@@ -122,7 +123,7 @@ export async function PUT(req: NextRequest) {
     if (!news) {
       return NextResponse.json({ error: "News not found" }, { status: 404 });
     }
-    return NextResponse.json({ message: "News updated successfully", news });
+    return NextResponse.json({ message: "News updated successfully", news: formatDbResponse(news) });
   } catch (error) {
     console.error("Error updating news:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
