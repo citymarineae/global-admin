@@ -4,7 +4,7 @@ interface MongoDocument {
   [key: string]: unknown; // Allow other fields
 }
 
-export default function formatDbResponse(documents: MongoDocument | MongoDocument[]): object | object[] {
+export function formatDbResponse(documents: MongoDocument | MongoDocument[]): object | object[] {
   const cleanDocument = (doc: MongoDocument): object => {
     // Convert the document to a plain object
     const plainDoc = JSON.parse(JSON.stringify(doc));

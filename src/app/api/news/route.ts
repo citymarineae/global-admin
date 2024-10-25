@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import News from "@/models/News";
 import { uploadToDropbox } from "@/lib/connectDropbox";
-import formatDbResponse from "@/lib/formatDbResponse";
+import { formatDbResponse } from "@/lib/formatDbResponse";
 
 export async function POST(req: NextRequest) {
   try {
