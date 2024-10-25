@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import News from "@/models/News";
 import { uploadToDropbox } from "@/lib/connectDropbox";
-import { formatDbResponse } from "@/lib/formatDbResponse";
+import formatDbResponse from "@/lib/formatDbResponse";
 
 export async function POST(req: NextRequest) {
   try {
@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
     } else {
       // Fetch all news items
       const news = await News.find().sort({ date: -1 }); // Sort by date, newest first
-      return NextResponse.json(formatDbResponse(news));
+      return NextResponse.json({ news: formatDbResponse(news) });
     }
   } catch (error) {
     console.error("Error fetching news:", error);
