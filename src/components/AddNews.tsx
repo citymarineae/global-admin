@@ -18,7 +18,7 @@ type FormData = {
 
 interface AddNewsPageProps {
   initialData?: {
-    _id: string;
+    id: string;
     title: string;
     brief: string;
     content: string;
@@ -116,7 +116,7 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
       reader.readAsDataURL(file);
     }
   }, []);
-  
+
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     const formData = new FormData();
@@ -130,18 +130,16 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
     }
 
     try {
-      const url = isEditing ? `/api/news?id=${initialData?._id}` : "/api/news";
+      const url = isEditing ? `/api/news?id=${initialData?.id}` : "/api/news";
       const method = isEditing ? "PUT" : "POST";
       const response = await fetch(url, {
         method: method,
         body: formData,
       });
+      const data = await response.json();
+      console.log(data);
 
-      if (response.ok) {
-        router.push("/admin/news"); // Redirect to news list page
-      } else {
-        throw new Error("Failed to save news");
-      }
+      router.push("/admin/news"); // Redirect to news list page
     } catch (error) {
       console.error("Error adding news:", error);
       alert("Failed to add news. Please try again.");

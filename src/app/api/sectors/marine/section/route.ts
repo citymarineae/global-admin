@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
-import News from "@/models/News";
 import { uploadToDropbox } from "@/lib/connectDropbox";
+import MarineSection from "@/models/MarineSection";
 import { formatDbResponse } from "@/lib/formatDbResponse";
 
 export async function POST(req: NextRequest) {
@@ -10,21 +10,21 @@ export async function POST(req: NextRequest) {
 
     const formData = await req.formData();
     const title = formData.get("title") as string;
-    const brief = formData.get("brief") as string;
-    const content = formData.get("content") as string;
-    const date = formData.get("date") as string;
+    const subTitle = formData.get("subTitle") as string;
     const image = formData.get("image") as File;
+    const content = formData.get("content") as string;
 
-    if (!title || !brief || !content || !date || !image) {
+    if (!image || !subTitle || !title || !content) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     let imagePath = "";
+
     if (image && image instanceof File) {
       try {
         // Create a unique filename
         const filename = `${Date.now()}-${image.name || "image"}`;
-        const dropboxPath = `/news/${filename}`;
+        const dropboxPath = `/marineSection/${filename}`;
 
         // Upload to Dropbox
         imagePath = await uploadToDropbox(image, dropboxPath);
@@ -34,24 +34,30 @@ export async function POST(req: NextRequest) {
         console.error("Error uploading to Dropbox:", error);
         return NextResponse.json({ error: "Error uploading image" }, { status: 500 });
       }
+    } else if (image && typeof image === "string") {
+      // do nothing
+      imagePath = image; // use the provided image path
     } else {
       console.log("No valid image file received");
       return NextResponse.json({ error: "Invalid image file" }, { status: 400 });
     }
+
     // Save to database
-    const news = new News({
+    const marine = new MarineSection({
       title,
-      brief,
       content,
-      date: new Date(date),
+      subTitle,
       image: imagePath,
     });
 
-    await news.save();
+    await marine.save();
 
-    return NextResponse.json({ message: "News created successfully", news: formatDbResponse(news) }, { status: 201 });
+    return NextResponse.json(
+      { message: "Marine Section data updated successfully", marine: formatDbResponse(marine) },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Error creating news:", error);
+    console.error("Error updating Marine section data:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
@@ -65,15 +71,15 @@ export async function GET(req: NextRequest) {
 
     if (id) {
       // Fetch a single news item by ID
-      const news = await News.findById(id);
-      if (!news) {
-        return NextResponse.json({ error: "News not found" }, { status: 404 });
+      const marineSections = await MarineSection.findById(id);
+      if (!marineSections) {
+        return NextResponse.json({ error: "Marine Section not found" }, { status: 404 });
       }
-      return NextResponse.json(formatDbResponse(news));
+      return NextResponse.json(formatDbResponse(marineSections));
     } else {
       // Fetch all news items
-      const news = await News.find().sort({ date: -1 }); // Sort by date, newest first
-      return NextResponse.json({ news: formatDbResponse(news) });
+      const marineSections = await MarineSection.find().sort({ date: -1 }); // Sort by date, newest first
+      return NextResponse.json({ marineSections: formatDbResponse(marineSections) });
     }
   } catch (error) {
     console.error("Error fetching news:", error);
@@ -84,10 +90,10 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
+
   if (!id) {
-    return NextResponse.json({ error: "Missing news ID" }, { status: 400 });
+    return NextResponse.json({ error: "Missing marine section ID" }, { status: 400 });
   }
-  await dbConnect();
 
   try {
     const formData = await req.formData();
@@ -100,7 +106,7 @@ export async function PUT(req: NextRequest) {
       try {
         // Create a unique filename
         const filename = `${Date.now()}-${newImage.name || "image"}`;
-        const dropboxPath = `/news/${filename}`;
+        const dropboxPath = `/team/${filename}`;
 
         // Upload to Dropbox
         const imagePath = await uploadToDropbox(newImage, dropboxPath);
@@ -119,13 +125,13 @@ export async function PUT(req: NextRequest) {
       delete updatedData.image;
     }
 
-    const news = await News.findByIdAndUpdate(id, updatedData, { new: true });
-    if (!news) {
-      return NextResponse.json({ error: "News not found" }, { status: 404 });
+    const member = await MarineSection.findByIdAndUpdate(id, updatedData, { new: true });
+    if (!member) {
+      return NextResponse.json({ error: "Marine Section not found" }, { status: 404 });
     }
-    return NextResponse.json({ message: "News updated successfully", news: formatDbResponse(news) });
+    return NextResponse.json({ message: "Marine Section Updated successfully", member: formatDbResponse(member) });
   } catch (error) {
-    console.error("Error updating news:", error);
+    console.error("Error updating marine section:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

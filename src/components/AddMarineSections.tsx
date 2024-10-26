@@ -1,32 +1,36 @@
 "use client";
-
 import { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
 import Image from "next/image";
+import { toast } from "sonner";
 
 type FormData = {
-  name: string;
-  position: string;
-  email: string;
-  phone: string;
-  description: string;
+  title: string;
+  content: string;
+  subTitle: string;
 };
 
-interface ExtendedFormData extends FormData {
-  id?: string;
-  image?: string;
-}
-
-interface AddMemberPageProps {
-  initialData?: ExtendedFormData;
+interface AddMarinePageProps {
+  initialData?: {
+    id: string;
+    title: string;
+    subTitle: string;
+    content: string;
+    image?: string;
+  };
   isEditing?: boolean;
 }
 
-export default function AddMember({ initialData, isEditing = false }: AddMemberPageProps) {
+export default function AddMarine({ initialData, isEditing = false }: AddMarinePageProps) {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     setValue,
   } = useForm<FormData>();
@@ -38,11 +42,9 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
 
   useEffect(() => {
     if (initialData) {
-      setValue("name", initialData.name);
-      setValue("position", initialData.position);
-      setValue("email", initialData.email);
-      setValue("phone", initialData.phone);
-      setValue("description", initialData.description);
+      setValue("title", initialData.title);
+      setValue("content", initialData.content);
+      setValue("subTitle", initialData.subTitle);
       if (initialData.image) {
         setPreviewImage(initialData.image as string);
       }
@@ -111,35 +113,35 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
       reader.readAsDataURL(file);
     }
   }, []);
+
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("position", data.position);
-    formData.append("email", data.email);
-    formData.append("phone", data.phone);
-    formData.append("description", data.description);
-
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    formData.append("subTitle", data.subTitle);
     if (imageFile) {
       formData.append("image", imageFile);
     }
 
     try {
-      const url = isEditing ? `/api/team?id=${initialData?.id}` : "/api/team";
+      const url = isEditing ? `/api/sectors/marine/section?id=${initialData?.id}` : "/api/sectors/marine/section";
       const method = isEditing ? "PUT" : "POST";
       const response = await fetch(url, {
         method: method,
         body: formData,
       });
-
-      if (response.ok) {
-        router.push("/admin/team"); // Redirect to news list page
-      } else {
-        throw new Error("Failed to add member");
+      const data = await response.json();
+      if (!data || data.error) {
+        toast.error("Failed to update Please try again.");
+        return;
       }
+      console.log(data);
+      toast.success("Article updated successfully!");
+      router.push("/admin/sectors/marine"); // Redirect to news list page
     } catch (error) {
-      console.error("Error adding member:", error);
-      alert("Failed to add member. Please try again.");
+      console.error("Error adding article:", error);
+      alert("Failed to add article. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -147,82 +149,60 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">{isEditing ? `Edit ${initialData?.name}` : "Add New Member"}</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <h1 className="text-3xl font-bold mb-6">{isEditing ? `Edit ${initialData?.title}` : "Add New Item"}</h1>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 lg:flex lg:space-x-8 lg:space-y-0">
+        {/* Left column */}
+        <div className="lg:w-2/3 space-y-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Title
             </label>
             <input
-              {...register("name", { required: "Name is required" })}
+              {...register("title", { required: "Title is required" })}
               type="text"
-              id="name"
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              id="title"
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
-            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+            {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
+            <label htmlFor="subTitle" className="block text-sm font-medium text-gray-700">
+              Sub Title
             </label>
             <input
-              {...register("email", { required: "Email is required" })}
-              type="email"
-              id="email"
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-              Phone
-            </label>
-            <input
-              {...register("phone", { required: "Phone is required" })}
-              type="tel"
-              id="phone"
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="position" className="block text-sm font-medium text-gray-700">
-              Position
-            </label>
-            <input
-              {...register("position", { required: "Position is required" })}
+              {...register("subTitle", { required: "Sub Title is required" })}
               type="text"
-              id="position"
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              id="subTitle"
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
-            {errors.position && <p className="mt-1 text-sm text-red-600">{errors.position.message}</p>}
+            {errors.subTitle && <p className="mt-1 text-sm text-red-600">{errors.subTitle.message}</p>}
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-              Description
+            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+              Full Content
             </label>
-            <textarea
-              {...register("description", { required: "Description is required" })}
-              id="description"
-              rows={5}
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            ></textarea>
-            {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
+            <Controller
+              name="content"
+              control={control}
+              rules={{ required: "Content is required" }}
+              render={({ field }) => (
+                <ReactQuill theme="snow" value={field.value} onChange={field.onChange} className="mt-1" />
+              )}
+            />
+            {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>}
           </div>
         </div>
 
-        <div className="flex flex-col justify-between">
+        {/* Right column */}
+        <div className="lg:w-1/3 space-y-6">
           <div>
             <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
               Image
             </label>
             <div
-              className="w-full max-w-80 h-80 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer overflow-hidden"
+              className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer overflow-hidden"
               onDrop={onDrop}
               onDragOver={(e) => e.preventDefault()}
               onClick={() => document?.getElementById("image")?.click()}
@@ -234,7 +214,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setPreviewImage(null);
+                      setPreviewImage(null); // Clear the preview image
                       setImageFile(null);
                     }}
                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
@@ -271,14 +251,13 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
             </div>
             {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
           </div>
-
-          <div className="mt-6">
+          <div>
             <button
               type="submit"
               disabled={isSubmitting}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {isSubmitting ? (isEditing ? "Updating..." : "Adding...") : isEditing ? "Update Member" : "Add Member"}
+              {isSubmitting ? "Submitting..." : "Save"}
             </button>
           </div>
         </div>

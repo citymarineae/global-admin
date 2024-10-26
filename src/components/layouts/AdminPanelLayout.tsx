@@ -11,9 +11,10 @@ import {
   Square2StackIcon,
   UsersIcon,
   XMarkIcon,
-  PhoneIcon
+  PhoneIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import AccordionItem from "../AccordianItem";
 
 const navigationItems = [
   {
@@ -31,9 +32,13 @@ const navigationItems = [
   { name: "Our Team", href: "/admin/team", icon: UsersIcon, current: false },
   {
     name: "Our Sectors",
-    href: "/admin/sectors",
     icon: Square2StackIcon,
     current: false,
+    subItems: [
+      { name: "Marine, Energy & Crewing", href: "/admin/sectors/marine" },
+      { name: "Ports & Terminals", href: "/admin/sectors/ports-and-terminals" },
+      { name: "Personal Lines", href: "/admin/sectors/personal-lines" },
+    ],
   },
   {
     name: "Claims",
@@ -57,8 +62,11 @@ interface AdminPanelLayoutProps {
 export default function AdminPanelLayout({ children, currentPage }: AdminPanelLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [navigation, setNavigation] = useState(navigationItems);
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     if (currentPage) {
       setNavigation(
         navigationItems.map((item) =>
@@ -68,6 +76,13 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
     }
   }, [currentPage]);
 
+  if (!isClient) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
   return (
     <>
       <div>
@@ -101,24 +116,34 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
                       <ul role="list" className="-mx-2 space-y-1">
                         {navigation.map((item) => (
                           <li key={item.name}>
-                            <a
-                              href={item.href}
-                              className={classNames(
-                                item.current
-                                  ? "bg-gray-50 text-primary"
-                                  : "text-gray-700 hover:bg-gray-50 hover:text-primary",
-                                "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
-                              )}
-                            >
-                              <item.icon
-                                aria-hidden="true"
-                                className={classNames(
-                                  item.current ? "text-primary" : "text-gray-400 group-hover:text-primary",
-                                  "h-6 w-6 shrink-0"
-                                )}
+                            {item.subItems ? (
+                              <AccordionItem
+                                name={item.name}
+                                icon={item.icon}
+                                subItems={item.subItems}
+                                isOpen={openAccordion === item.name}
+                                onToggle={() => setOpenAccordion(openAccordion === item.name ? null : item.name)}
                               />
-                              {item.name}
-                            </a>
+                            ) : (
+                              <a
+                                href={item.href}
+                                className={classNames(
+                                  item.current
+                                    ? "bg-gray-50 text-primary"
+                                    : "text-gray-700 hover:bg-gray-50 hover:text-primary",
+                                  "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+                                )}
+                              >
+                                <item.icon
+                                  aria-hidden="true"
+                                  className={classNames(
+                                    item.current ? "text-primary" : "text-gray-400 group-hover:text-primary",
+                                    "h-6 w-6 shrink-0"
+                                  )}
+                                />
+                                {item.name}
+                              </a>
+                            )}
                           </li>
                         ))}
                       </ul>
@@ -143,24 +168,34 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item) => (
                       <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? "bg-gray-50 text-primary"
-                              : "text-gray-700 hover:bg-gray-50 hover:text-primary",
-                            "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
-                          )}
-                        >
-                          <item.icon
-                            aria-hidden="true"
-                            className={classNames(
-                              item.current ? "text-primary" : "text-gray-400 group-hover:text-primary",
-                              "h-6 w-6 shrink-0"
-                            )}
+                        {item.subItems ? (
+                          <AccordionItem
+                            name={item.name}
+                            icon={item.icon}
+                            subItems={item.subItems}
+                            isOpen={openAccordion === item.name}
+                            onToggle={() => setOpenAccordion(openAccordion === item.name ? null : item.name)}
                           />
-                          {item.name}
-                        </a>
+                        ) : (
+                          <a
+                            href={item.href}
+                            className={classNames(
+                              item.current
+                                ? "bg-gray-50 text-primary"
+                                : "text-gray-700 hover:bg-gray-50 hover:text-primary",
+                              "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+                            )}
+                          >
+                            <item.icon
+                              aria-hidden="true"
+                              className={classNames(
+                                item.current ? "text-primary" : "text-gray-400 group-hover:text-primary",
+                                "h-6 w-6 shrink-0"
+                              )}
+                            />
+                            {item.name}
+                          </a>
+                        )}
                       </li>
                     ))}
                   </ul>

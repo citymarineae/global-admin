@@ -6,7 +6,7 @@ import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
 import Image from "next/image";
 
 interface NewsItem {
-  _id: string;
+  id: string;
   title: string;
   brief: string;
   date: string;
@@ -21,12 +21,8 @@ const News = () => {
     const fetchNews = async () => {
       try {
         const response = await fetch("/api/news");
-        if (response.ok) {
-          const data = await response.json();
-          setNewsItems(data);
-        } else {
-          console.error("Failed to fetch news");
-        }
+        const data = await response.json();
+        setNewsItems(data.news);
       } catch (error) {
         console.error("Error fetching news:", error);
       } finally {
@@ -59,7 +55,7 @@ const News = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {newsItems.map((news) => (
-              <div key={news._id} className="bg-white shadow-md rounded-lg overflow-hidden">
+              <div key={news.id} className="bg-white shadow-md rounded-lg overflow-hidden">
                 <Image
                   src={news.image}
                   alt={news.title}
@@ -72,7 +68,7 @@ const News = () => {
                   <p className="text-gray-600 mb-2">{news.brief}</p>
                   <p className="text-sm text-gray-500 mb-4">{new Date(news.date).toLocaleDateString()}</p>
                   <Link
-                    href={`/admin/news/edit/${news._id}`}
+                    href={`/admin/news/edit/${news.id}`}
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                   >
                     Edit

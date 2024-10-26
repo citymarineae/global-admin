@@ -6,7 +6,7 @@ import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
 import Image from "next/image";
 
 interface Member {
-  _id: string;
+  id: string;
   name: string;
   position: string;
   description: string;
@@ -23,12 +23,8 @@ const Team = () => {
     const fetchMembers = async () => {
       try {
         const response = await fetch("/api/team");
-        if (response.ok) {
-          const data = await response.json();
-          setMembers(data);
-        } else {
-          console.error("Failed to fetch news");
-        }
+        const data = await response.json();
+        setMembers(data);
       } catch (error) {
         console.error("Error fetching news:", error);
       } finally {
@@ -61,7 +57,7 @@ const Team = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {members.map((member) => (
-              <div key={member._id} className="bg-white shadow-md rounded-lg overflow-hidden">
+              <div key={member.id} className="bg-white shadow-md rounded-lg overflow-hidden">
                 <Image
                   src={member.image}
                   alt={member.name}
@@ -73,7 +69,7 @@ const Team = () => {
                   <h2 className="text-xl font-semibold mb-2">{member.name}</h2>
                   <p className="text-gray-600 mb-2">{member.position}</p>
                   <Link
-                    href={`/admin/team/edit/${member._id}`}
+                    href={`/admin/team/edit/${member.id}`}
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                   >
                     Edit

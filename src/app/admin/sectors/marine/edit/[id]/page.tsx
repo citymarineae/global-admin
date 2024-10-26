@@ -3,37 +3,36 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
-import AddNews from "@/components/AddNews";
+import AddMarine from "@/components/AddMarineSections";
 
 const EditNewsPage = () => {
   const { id } = useParams();
-  const [newsData, setNewsData] = useState(null);
+  const [marineData, setMarineData] = useState(null);
 
   useEffect(() => {
-    const fetchNewsData = async () => {
+    const fetchMarineSectionData = async () => {
       try {
-        const response = await fetch(`/api/news?id=${id}`);
+        const response = await fetch(`/api/sectors/marine/section?id=${id}`);
         const data = await response.json();
-        console.log(data);
 
-        setNewsData(data);
+        setMarineData(data);
       } catch (error) {
         console.error("Error fetching news data:", error);
       }
     };
 
     if (id) {
-      fetchNewsData();
+      fetchMarineSectionData();
     }
   }, [id]);
 
-  if (!newsData) {
+  if (!marineData) {
     return <div>Loading...</div>;
   }
 
   return (
     <AdminPanelLayout currentPage="/admin/news">
-      <AddNews initialData={newsData} isEditing />
+      <AddMarine initialData={marineData} isEditing />
     </AdminPanelLayout>
   );
 };
