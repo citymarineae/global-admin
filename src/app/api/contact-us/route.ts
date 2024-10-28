@@ -3,6 +3,12 @@ import { formatDbResponse } from "@/lib/formatDbResponse";
 import ContactUs from "@/models/ContactUs";
 import { NextRequest, NextResponse } from "next/server";
 
+
+export async function POST(){
+  return NextResponse.json({message:"this is a test"},{status:200})
+}
+
+
 export async function GET() {
   await dbConnect();
   try {
