@@ -13,7 +13,7 @@ type FormData = {
 }
 
 type ContactData = {
-    _id:string
+    id:string
     phone:string
     fax:string
     map:string
@@ -38,13 +38,14 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
                 const response = await fetch(`/api/contact-us`);
                 if (response.ok) {
                     const data = await response.json();
-                    setValue("phone", data[0].phone)
-                    setValue("fax", data[0].fax)
-                    setValue("map", data[0].map)
-                    setValue("address", data[0].address)
-                    if(data[0].map){
+                    console.log(data.contact[0])
+                    setValue("phone", data.contact[0].phone)
+                    setValue("fax", data.contact[0].fax)
+                    setValue("map", data.contact[0].map)
+                    setValue("address", data.contact[0].address)
+                    if(data.contact[0].map){
                         setPreviewMap(true)
-                        setContactData(data[0])
+                        setContactData(data.contact[0])
                     }
                 } else {
                     console.error("Failed to fetch contact data");
@@ -73,7 +74,7 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
         formData.append("address", data.address);
 
         try {
-            const url = `/api/contact-us?id=${contactData?._id}`;
+            const url = `/api/contact-us?id=${contactData?.id}`;
             const method = "PUT";
             const response = await fetch(url, {
                 method: method,

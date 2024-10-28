@@ -14,7 +14,7 @@ type FormData = {
 };
 
 type aboutDataType = {
-    _id: string
+    id: string
     pageHeading: string
     description: string
     contentHeading: string
@@ -47,8 +47,9 @@ const EditAbout = () => {
                 if (response.ok) {
 
                     const data = await response.json();
-                    if (data.about) {
+                    if (data.about[0]) {
 
+                        console.log(data.about[0].id)
                         setAboutData(data.about[0])
 
                         setValue("pageHeading", data.about[0].pageHeading);
@@ -123,7 +124,7 @@ const EditAbout = () => {
 
         try {
             if (aboutData) {
-                const url = `/api/about?id=${aboutData._id}`;
+                const url = `/api/about?id=${aboutData.id}`;
                 const method = "PUT";
                 const response = await fetch(url, {
                     method: method,
