@@ -4,9 +4,6 @@ import ContactUs from "@/models/ContactUs";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function POST(){
-  return NextResponse.json({message:"this is a test"},{status:200})
-}
 
 
 export async function GET() {
@@ -25,7 +22,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 

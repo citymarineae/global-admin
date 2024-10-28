@@ -125,7 +125,7 @@ const EditAbout = () => {
         try {
             if (aboutData) {
                 const url = `/api/about?id=${aboutData.id}`;
-                const method = "PUT";
+                const method = "POST";
                 const response = await fetch(url, {
                     method: method,
                     body: formData,
