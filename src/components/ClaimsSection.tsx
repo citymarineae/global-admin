@@ -49,12 +49,13 @@ const ClaimsSection = ({ editMode }: { editMode?: boolean }) => {
         const response = await fetch(`/api/claims`);
         if (response.ok) {
           const data = await response.json();
-          setClaimsData(data[0]);
-          setValue("pageHeading",data[0].pageHeading)
-          setValue("contentHeading",data[0].contentHeading)
-          setValue("content",data[0].content)
-          if (data[0].image) {
-            setPreviewImage(data[0].image as string);
+          console.log(data.claims[0])
+          setClaimsData(data.claims[0]);
+          setValue("pageHeading",data.claims[0].pageHeading)
+          setValue("contentHeading",data.claims[0].contentHeading)
+          setValue("content",data.claims[0].content)
+          if (data.claims[0].image) {
+            setPreviewImage(data.claims[0].image as string);
           }
         } else {
           console.error("Failed to fetch claims data");
