@@ -16,9 +16,12 @@ export async function middleware(request: NextRequest) {
   // Handle API routes
   if (isApiRoute) {
     // Allow GET requests without authentication
+    const response = NextResponse.next();
     if (request.method === "GET") {
       // Add CORS headers for GET requests
-      const response = NextResponse.next();
+      response.headers.set("Cache-Control", "no-store, max-age=0");
+      response.headers.set("Pragma", "no-cache");
+      response.headers.set("Expires", "0");
       response.headers.set("Access-Control-Allow-Origin", "*");
       response.headers.set("Access-Control-Allow-Methods", "GET");
       response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
