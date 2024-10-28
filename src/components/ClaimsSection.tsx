@@ -17,7 +17,7 @@ type FormData = {
 }
 
 type ClaimsData = {
-  _id:string
+  id:string
   pageHeading:string
   contentHeading:string
   content:string
@@ -114,7 +114,7 @@ const ClaimsSection = ({ editMode }: { editMode?: boolean }) => {
     }
 
     try {
-      const url = `/api/claims?id=${claimsData?._id}`;
+      const url = `/api/claims?id=${claimsData?.id}`;
       const method = "PUT";
       const response = await fetch(url, {
         method: method,

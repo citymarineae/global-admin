@@ -13,7 +13,7 @@ type FormData = {
 }
 
 type ContactData = {
-    _id:string
+    id:string
     phone:string
     fax:string
     map:string
@@ -74,7 +74,7 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
         formData.append("address", data.address);
 
         try {
-            const url = `/api/contact-us?id=${contactData?._id}`;
+            const url = `/api/contact-us?id=${contactData?.id}`;
             const method = "PUT";
             const response = await fetch(url, {
                 method: method,
