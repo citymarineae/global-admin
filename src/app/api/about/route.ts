@@ -40,6 +40,8 @@ export async function PUT(req: NextRequest) {
     // Check if a new image is provided
     const newImage = formData.get("image") as File | null;
 
+    console.log("Imga==",newImage)
+
     if (newImage && newImage instanceof File) {
       try {
         // Create a unique filename
@@ -61,7 +63,7 @@ export async function PUT(req: NextRequest) {
       // If no new image is provided, remove the image field from updatedData
       // to prevent overwriting the existing image path with null
       // making the image to empty string if no image is present
-      updatedData.image = "";
+      delete updatedData.image;
     }
 
     //todo - need to change this
