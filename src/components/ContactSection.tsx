@@ -75,7 +75,7 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
 
         try {
             const url = `/api/contact-us?id=${contactData?.id}`;
-            const method = "PUT";
+            const method = "POST";
             const response = await fetch(url, {
                 method: method,
                 body: formData,

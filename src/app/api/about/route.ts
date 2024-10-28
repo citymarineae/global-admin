@@ -4,9 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { uploadToDropbox } from "@/lib/connectDropbox";
 import { formatDbResponse } from "@/lib/formatDbResponse";
 
-export async function POST(){
-  return NextResponse.json({message:"this is a test"},{status:200})
-}
+
 
 export async function GET() {
   await dbConnect();
@@ -27,7 +25,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(req: NextRequest) {
+export async function POST(req: NextRequest) {
   await dbConnect();
 
   try {
