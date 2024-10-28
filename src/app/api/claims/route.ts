@@ -57,7 +57,7 @@ export async function PUT(req: NextRequest) {
     } else {
       // If no new image is provided, remove the image field from updatedData
       // to prevent overwriting the existing image path with null
-      updatedData.image = "";
+      delete updatedData.image;
     }
 
     const claims = await Claims.findByIdAndUpdate(id, updatedData, { new: true });
