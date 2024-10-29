@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
 import Link from 'next/link';
 import Image from "next/image";
-import { Controller } from 'react-hook-form';
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import dynamic from 'next/dynamic'
