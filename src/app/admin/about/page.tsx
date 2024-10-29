@@ -25,6 +25,8 @@ const AboutPage = () => {
       }
 
 
+      
+
 
   const [aboutData,setAboutData] = useState<aboutDataType | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null);
