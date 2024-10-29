@@ -62,7 +62,9 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
+    const limit = parseInt(searchParams.get("limit") || "")
 
+    console.log("Limit",limit)
     if (id) {
       // Fetch a single news item by ID
       const news = await News.findById(id);
@@ -70,7 +72,13 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "News not found" }, { status: 404 });
       }
       return NextResponse.json(formatDbResponse(news));
-    } else {
+
+    }else if(!isNaN(limit)){
+      
+      const news = await News.find().sort({ date: -1 }).limit(limit); // Sort by date, newest first
+      return NextResponse.json({ news: formatDbResponse(news) });
+    
+    }else {
       // Fetch all news items
       const news = await News.find().sort({ date: -1 }); // Sort by date, newest first
       return NextResponse.json({ news: formatDbResponse(news) });
