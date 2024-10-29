@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react'
 import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
 import Link from 'next/link';
 import Image from "next/image";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
+import dynamic from 'next/dynamic'
 
 type aboutDataType = {
   pageHeading:string
@@ -14,6 +17,14 @@ type aboutDataType = {
 }
 
 const AboutPage = () => {
+
+  const editMode = false
+    
+    const editorModule = {
+        toolbar : editMode ? editMode : false
+      }
+
+
 
   const [aboutData,setAboutData] = useState<aboutDataType | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -101,18 +112,10 @@ const AboutPage = () => {
           </div>
 
           <div>
-            <label htmlFor="brief" className="block text-sm font-medium text-gray-700">
-              Content
+            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+              Full Content
             </label>
-            <textarea
-              
-              id="brief"
-              rows={6}
-              value={aboutData?.content}
-              readOnly
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            ></textarea>
-            
+                <ReactQuill theme="snow" value={aboutData?.content} className="mt-1" readOnly={!editMode} modules={editorModule}/>
           </div>
 
           

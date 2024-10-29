@@ -2,9 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import AdminPanelLayout from '@/components/layouts/AdminPanelLayout'
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
+import dynamic from 'next/dynamic'
 
 type FormData = {
     pageHeading: string;
@@ -24,11 +27,19 @@ type aboutDataType = {
 
 
 const EditAbout = () => {
+    
+    const editMode = true
+    
+    const editorModule = {
+        toolbar : editMode ? editMode : false
+      }
+
     const {
         register,
         handleSubmit,
-        formState: {},
+        formState: { errors },
         setValue,
+        control,
     } = useForm<FormData>();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -117,7 +128,7 @@ const EditAbout = () => {
         formData.append("content", data.content);
         formData.append("contentHeading", data.contentHeading);
 
-        
+
         if (imageFile) {
             formData.append("image", imageFile);
         }
@@ -200,16 +211,18 @@ const EditAbout = () => {
                         </div>
 
                         <div>
-                            <label htmlFor="brief" className="block text-sm font-medium text-gray-700">
-                                Content
+                            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+                                Full Content
                             </label>
-                            <textarea
-                                {...register("content", { required: "Title is required" })}
-                                id="brief"
-                                rows={6}
-                                className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            ></textarea>
-
+                            <Controller
+                                name="content"
+                                control={control}
+                                rules={{ required: "Content is required" }}
+                                render={({ field }) => (
+                                    <ReactQuill theme="snow" value={field.value} onChange={field.onChange} className="mt-1" readOnly={!editMode} modules={editorModule} />
+                                )}
+                            />
+                            {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>}
                         </div>
 
                     </div>
@@ -275,7 +288,7 @@ const EditAbout = () => {
                         <div>
                             <button
                                 type="submit"
-                            disabled={isSubmitting}
+                                disabled={isSubmitting}
                                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 {isSubmitting ? "Updating..." : "Update About"}
