@@ -63,7 +63,7 @@ const Team = () => {
                   alt={member.name}
                   width={400}
                   height={200}
-                  className="w-full h-48 object-contain"
+                  className="w-full object-contain"
                 />
                 <div className="p-4">
                   <h2 className="text-xl font-semibold mb-2">{member.name}</h2>

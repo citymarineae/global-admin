@@ -169,7 +169,7 @@ const HomeAboutSection = ({editMode}:{
     const editorModule = {
       toolbar : editMode ? editMode : false
     }
-    
+
  
     if(isLoading){
       <div>Loading Content....</div>
@@ -180,12 +180,12 @@ const HomeAboutSection = ({editMode}:{
     <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">City Marine About Content (Home)</h1>
-          <Link
+          {!editMode && <Link
             href="/admin/dashboard/edit-about"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Edit About
-          </Link>
+          </Link>}
         </div>
         <form className="space-y-6 lg:flex lg:space-x-8 lg:space-y-0" onSubmit={handleSubmit(onSubmit)}>
         {/* Left column */}
