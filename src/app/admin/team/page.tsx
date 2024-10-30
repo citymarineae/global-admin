@@ -57,13 +57,13 @@ const Team = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {members.map((member) => (
-              <div key={member.id} className="bg-white shadow-md rounded-lg overflow-hidden">
+              <div key={member.id} className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-300">
                 <Image
                   src={member.image}
                   alt={member.name}
                   width={400}
                   height={200}
-                  className="w-full h-48 object-contain"
+                  className="w-full object-contain"
                 />
                 <div className="p-4">
                   <h2 className="text-xl font-semibold mb-2">{member.name}</h2>

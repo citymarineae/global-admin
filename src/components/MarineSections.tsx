@@ -31,7 +31,7 @@ const MarineSections = () => {
 
   return (
     <div className="w-full">
-      <div className="w-full flex justify-end">
+      <div className="w-full flex justify-end mb-5">
         <Link
           href="/admin/sectors/marine/add-marine"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -40,7 +40,7 @@ const MarineSections = () => {
         </Link>
       </div>
       {!list?.length && <p className="text-center text-gray-600">No sections found.</p>}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 pb-3">
         {list &&
           list.length > 0 &&
           list?.map((item) => (
@@ -50,7 +50,7 @@ const MarineSections = () => {
                 alt={item.title}
                 width={400}
                 height={200}
-                className="w-full h-48 object-contain"
+                className="w-full object-contain"
               />
               <div className="p-4">
                 <h2 className="text-xl font-semibold mb-2">{item.title}</h2>

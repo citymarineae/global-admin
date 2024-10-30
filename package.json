@@ -9,14 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@headlessui/react": "^2.1.10",
+    "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.1.5",
     "@nextui-org/react": "^2.4.8",
     "@types/jsonwebtoken": "^9.0.7",
     "cookie": "^1.0.1",
     "date-fns": "^4.1.0",
     "dropbox": "^10.34.0",
+    "flowbite-react": "^0.10.2",
     "framer-motion": "^11.11.9",
+    "html-react-parser": "^5.1.18",
     "jose": "^5.9.4",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.2",

@@ -158,7 +158,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
               {...register("name", { required: "Name is required" })}
               type="text"
               id="name"
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
             />
             {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
           </div>
@@ -171,7 +171,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
               {...register("email", { required: "Email is required" })}
               type="email"
               id="email"
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
             />
             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
           </div>
@@ -184,7 +184,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
               {...register("phone", { required: "Phone is required" })}
               type="tel"
               id="phone"
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
             />
             {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>}
           </div>
@@ -197,7 +197,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
               {...register("position", { required: "Position is required" })}
               type="text"
               id="position"
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
             />
             {errors.position && <p className="mt-1 text-sm text-red-600">{errors.position.message}</p>}
           </div>
@@ -210,7 +210,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
               {...register("description", { required: "Description is required" })}
               id="description"
               rows={5}
-              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
             ></textarea>
             {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
           </div>
