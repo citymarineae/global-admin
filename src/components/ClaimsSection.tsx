@@ -201,7 +201,7 @@ const ClaimsSection = ({ editMode }: { editMode?: boolean }) => {
               type="text"
               id="title"
               readOnly={!editMode}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
               {...register("pageHeading", { required: "Page title is required" })}
             />
             {errors.pageHeading && <p className="mt-1 text-sm text-red-600">{errors.pageHeading.message}</p>}
@@ -216,7 +216,7 @@ const ClaimsSection = ({ editMode }: { editMode?: boolean }) => {
               id="title"
               {...register("contentHeading", { required: "Title is required" })}
               readOnly={!editMode}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
             />
             {errors.contentHeading && <p className="mt-1 text-sm text-red-600">{errors.contentHeading.message}</p>}
           </div>

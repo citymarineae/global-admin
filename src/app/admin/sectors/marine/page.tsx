@@ -165,7 +165,7 @@ const Marine = () => {
                     {...register("title", { required: "Title is required" })}
                     type="text"
                     id="title"
-                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
                   />
                   {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
                 </div>
