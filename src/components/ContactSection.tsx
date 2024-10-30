@@ -9,7 +9,6 @@ import "react-quill/dist/quill.snow.css";
 import dynamic from 'next/dynamic'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import parse, { Element } from 'html-react-parser'
 import { Quill } from 'react-quill'
 const Block = Quill.import('blots/block');
 class DivBlock extends Block {} 
@@ -43,7 +42,6 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
         setValue,
         control,
         watch,
-        getValues,
     } = useForm<FormData>();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
