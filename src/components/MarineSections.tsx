@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { DragDropContext, Draggable, Droppable,DropResult } from 'react-beautiful-dnd'
 
 type MarineCard = {
   id: string;
@@ -10,6 +10,8 @@ type MarineCard = {
   description: string;
   image: string;
 };
+
+
 
 const MarineSections = () => {
   const [list, setList] = useState<MarineCard[]>();
@@ -31,11 +33,14 @@ const MarineSections = () => {
 
   console.log(list);
 
-  const handleDragEnd = async(result: any) => {
+  const handleDragEnd = async(result:DropResult) => {
+    console.log(result)
     if(list){
       const items = Array.from(list)
       const [reOrderedItems] = items.splice(result.source.index, 1)
-      items.splice(result.destination.index, 0, reOrderedItems)
+      if(result.destination){
+        items.splice(result.destination.index, 0, reOrderedItems)
+      }
       setList(items)
     }
   }
@@ -88,7 +93,7 @@ const MarineSections = () => {
 
         {list?.map((item) => (
 
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="bg-white shadow-md rounded-lg overflow-hidden" key={item.id}>
             <Image
               src={item.image}
               alt={item.title}
