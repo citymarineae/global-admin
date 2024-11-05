@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { DragDropContext, Draggable, Droppable,DropResult } from 'react-beautiful-dnd'
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd'
 
 type MarineCard = {
   id: string;
@@ -33,12 +33,12 @@ const MarineSections = () => {
 
   console.log(list);
 
-  const handleDragEnd = async(result:DropResult) => {
+  const handleDragEnd = async (result: DropResult) => {
     console.log(result)
-    if(list){
+    if (list) {
       const items = Array.from(list)
       const [reOrderedItems] = items.splice(result.source.index, 1)
-      if(result.destination){
+      if (result.destination) {
         items.splice(result.destination.index, 0, reOrderedItems)
       }
       setList(items)
@@ -47,20 +47,20 @@ const MarineSections = () => {
 
   const [reOrderMode, setReOrderMode] = useState(false)
 
-  const handleConfirm = async() =>{
+  const handleConfirm = async () => {
 
     if (list) {
-      const response = await fetch("/api/sectors/marine/section/reorder",{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
+      const response = await fetch("/api/sectors/marine/section/reorder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
         },
-        body:JSON.stringify(list)
+        body: JSON.stringify(list)
       })
 
-      if(response.ok){
+      if (response.ok) {
         alert("Updated list accordingly")
-      }else{
+      } else {
         alert("Something went wrong")
       }
     }
@@ -74,7 +74,7 @@ const MarineSections = () => {
 
         <div>
           {!reOrderMode ? <button onClick={() => setReOrderMode(true)} className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Reorder</button> : <button onClick={handleConfirm} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Confirm</button>}
-          
+
         </div>
 
         <Link
@@ -115,36 +115,45 @@ const MarineSections = () => {
         ))}
 
       </div>) : (
-        
+
         <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="p-4 w-full">
-        <Droppable droppableId="sectorsDroppable">
-          {(provided)=>(
-            <ul className="bg-white rounded-lg shadow divide-y divide-gray-200 w-full" {...provided.droppableProps} ref={provided.innerRef}>
-              {list?.map((item,index)=>(
-                <Draggable draggableId={item.id} index={index} key={item.id}>
-                  {(provided)=>(
-                     <li className="px-6 py-4" {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
-                     <div className="flex justify-between">
-                        
-                       <span className="font-semibold text-lg">{item.title}</span>
-                       <span className="text-gray-500 text-xs">1 day ago</span>
-                       
-                     </div>
-                     {/* <p className="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris.</p> */}
-                   </li>
-                  )}
-              </Draggable>
-              ))}
-              {provided.placeholder}
-          </ul>
-          )}
-        
-        </Droppable>
-      </div>
-      </DragDropContext>
-      
-    )
+          <div className="p-4 w-full">
+            <Droppable droppableId="sectorsDroppable">
+              {(provided) => (
+                <ul className="bg-white rounded-lg shadow divide-y divide-gray-200 w-full" {...provided.droppableProps} ref={provided.innerRef}>
+                  {list?.map((item, index) => (
+                    <Draggable draggableId={item.id} index={index} key={item.id}>
+                      {(provided) => (
+                        <li className="px-6 py-4" {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
+                          <div className="flex justify-between">
+                            <div className="flex justify-between items-center gap-4">
+                              <div>
+                                <Image
+                                  src={item.image}
+                                  alt={item.title}
+                                  width={70}
+                                  height={50}
+                                  className="w-full object-contain"
+                                />
+                              </div>
+                              <span className="font-semibold text-lg">{item.title}</span>
+                            </div>
+
+                          </div>
+                          {/* <p className="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris.</p> */}
+                        </li>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </ul>
+              )}
+
+            </Droppable>
+          </div>
+        </DragDropContext>
+
+      )
 
       }
 

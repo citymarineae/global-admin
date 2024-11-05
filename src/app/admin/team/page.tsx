@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
 import Image from "next/image";
+import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 
 interface Member {
   id: string;
@@ -18,6 +19,7 @@ interface Member {
 const Team = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [reOrderMode,setReOrderMode] = useState(false)
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -35,17 +37,57 @@ const Team = () => {
     fetchMembers();
   }, []);
 
+  const handleDragEnd = (result:DropResult) =>{
+    if (members) {
+      const items = Array.from(members)
+      const [reOrderedItems] = items.splice(result.source.index, 1)
+      if (result.destination) {
+        items.splice(result.destination.index, 0, reOrderedItems)
+      }
+      setMembers(items)
+    }
+  }
+
+  const handleConfirm = async() =>{
+    if (members) {
+      const response = await fetch("/api/team/reorder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(members)
+      })
+
+      if (response.ok) {
+        alert("Updated list accordingly")
+      } else {
+        alert("Something went wrong")
+      }
+    }
+
+    setReOrderMode(false)
+  }
+
+
   return (
     <AdminPanelLayout currentPage="/admin/team">
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">City Marine Teams Page</h1>
+          <div className="flex justify-between gap-5">
+          
+          <div>
+          {!reOrderMode ? <button onClick={() => setReOrderMode(true)} className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Reorder</button> : <button onClick={handleConfirm} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Confirm</button>}
+
+        </div>
+
           <Link
             href="/admin/team/add-member"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Add New Member
           </Link>
+          </div>
         </div>
         {isLoading ? (
           <p className="text-center text-gray-600">Loading members...</p>
@@ -55,7 +97,7 @@ const Team = () => {
             <p className="mt-2 text-gray-500">Click &quot;Add New Member&quot; to create your first team member.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          !reOrderMode ? ( <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {members.map((member) => (
               <div key={member.id} className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-300">
                 <Image
@@ -77,7 +119,44 @@ const Team = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </div> ) :(
+            <DragDropContext onDragEnd={handleDragEnd}>
+            <div className="p-4 w-full">
+              <Droppable droppableId="sectorsDroppable">
+                {(provided) => (
+                  <ul className="bg-white rounded-lg shadow divide-y divide-gray-200 w-full" {...provided.droppableProps} ref={provided.innerRef}>
+                    {members?.map((item, index) => (
+                      <Draggable draggableId={item.id} index={index} key={item.id}>
+                        {(provided) => (
+                          <li className="px-6 py-4" {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
+                            <div className="flex justify-between">
+                              <div className="flex justify-between items-center gap-4">
+                                <div>
+                                  <Image
+                                    src={item.image}
+                                    alt={item.name}
+                                    width={70}
+                                    height={50}
+                                    className="w-full object-contain"
+                                  />
+                                </div>
+                                <span className="font-semibold text-lg">{item.name}</span>
+                              </div>
+  
+                            </div>
+                            {/* <p className="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris.</p> */}
+                          </li>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </ul>
+                )}
+  
+              </Droppable>
+            </div>
+          </DragDropContext>
+          )
         )}
       </main>
     </AdminPanelLayout>
