@@ -84,11 +84,25 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
+    // console.log("Id",id)
+
+    // const marines = await MarineSection.find({})
+
+    // const found = marines.find((item)=>item.replace(/&/g, '-')
+    // .replace(/,/g, '')                  
+    // .replace(/’/g, '-')                  
+    // .replace(/ +/g, '-')                 
+    // .replace(/-+/g, '-')                 
+    // .toLowerCase()                       
+    // .trim() === id)
+
+    // console.log(found)
+
     if (id) {
       // Fetch a single news item by ID
       const marineSections = await MarineSection.findById(id);
       if (!marineSections) {
-        return NextResponse.json({ error: "Marine Section not found" }, { status: 404 });
+        return NextResponse.json({ error: "Marine Section not found",id }, { status: 404 });
       }
       return NextResponse.json(formatDbResponse(marineSections));
     } else {

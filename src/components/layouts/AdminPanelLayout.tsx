@@ -15,6 +15,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import AccordionItem from "../AccordianItem";
+import { useRouter } from "next/navigation";
 
 const navigationItems = [
   {
@@ -84,6 +85,23 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
       </div>
     );
   }
+
+  const router = useRouter()
+
+  const handleLogout = async() =>{
+    try {
+      const response = await fetch('/api/logout')
+      if(response.ok){
+        router.push('/admin')
+      }else{
+        alert("Logout failed")
+      }
+      
+    } catch (error) {
+      console.log("Something went wrong",error)
+    }
+  }
+
   return (
     <>
       <div>
@@ -215,6 +233,7 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
                     />
                     <span className="sr-only">Your profile</span>
                     <span aria-hidden="true">Admin</span>
+                    <button onClick={handleLogout}>Logout</button>
                   </a>
                 </li>
               </ul>

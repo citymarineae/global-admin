@@ -42,7 +42,10 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-md">
-        <CardHeader className="flex justify-center pb-0">
+        <CardHeader className="flex justify-center pb-0 flex-col">
+          
+              <img src="/logo/logo-dark.svg" style={{height:"100px",width:"200px"}}></img>
+          
           <h1 className="text-2xl font-bold">Login</h1>
         </CardHeader>
         <CardBody>
