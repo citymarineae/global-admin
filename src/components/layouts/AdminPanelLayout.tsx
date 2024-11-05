@@ -62,6 +62,10 @@ interface AdminPanelLayoutProps {
 }
 
 export default function AdminPanelLayout({ children, currentPage }: AdminPanelLayoutProps) {
+
+  const router = useRouter()
+
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [navigation, setNavigation] = useState(navigationItems);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
@@ -86,7 +90,7 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
     );
   }
 
-  const router = useRouter()
+ 
 
   const handleLogout = async() =>{
     try {
