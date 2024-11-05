@@ -17,6 +17,14 @@ const MarineSectionSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  bannerVideo:{
+    type:String,
+    required:true
+  },
+  bannerImage:{
+    type:String,
+    required:true
+  }
 });
 
 export default mongoose.models.MarineSection || mongoose.model("MarineSection", MarineSectionSchema);
