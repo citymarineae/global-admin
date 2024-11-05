@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { serialize } from 'cookie';
 
-export async function GET(req: Request) {
+export async function GET() {
   // Clear the authentication cookie by setting it with an expired date
   const cookie = serialize("token", "", {
     httpOnly: true,
