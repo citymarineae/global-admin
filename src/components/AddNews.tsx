@@ -8,12 +8,14 @@ import { useRouter } from "next/navigation";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import Image from "next/image";
+import { generateSlugForNews } from "@/app/admin/helpers/generateSlug";
 
 type FormData = {
   title: string;
   brief: string;
   content: string;
   date: string;
+  slug:string;
 };
 
 interface AddNewsPageProps {
@@ -24,6 +26,7 @@ interface AddNewsPageProps {
     content: string;
     image?: string;
     date: string;
+    slug:string;
   };
   isEditing?: boolean;
 }
@@ -35,6 +38,7 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
     control,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<FormData>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -48,6 +52,7 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
       setValue("brief", initialData.brief);
       setValue("content", initialData.content);
       setValue("date", format(new Date(initialData.date), "yyyy-MM-dd"));
+      setValue("slug",initialData.slug)
       if (initialData.image) {
         setPreviewImage(initialData.image as string);
       }
@@ -124,6 +129,7 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
     formData.append("brief", data.brief);
     formData.append("content", data.content);
     formData.append("date", data.date);
+    formData.append("slug",data.slug);
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -148,6 +154,10 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
     }
   };
 
+  useEffect(()=>{
+    setValue("slug",generateSlugForNews(watch("title")))
+  },[watch("title")])
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">{isEditing ? `Edit ${initialData?.title}` : "Add New Article"}</h1>
@@ -165,6 +175,19 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
               className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
             {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Slug
+            </label>
+            <input
+              {...register("slug", { required: "Title is required" })}
+              type="text"
+              id="slug"
+              readOnly
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            />
           </div>
 
           <div>
