@@ -12,10 +12,12 @@ import {
   UsersIcon,
   XMarkIcon,
   PhoneIcon,
+  PowerIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import AccordionItem from "../AccordianItem";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const navigationItems = [
   {
@@ -50,6 +52,7 @@ const navigationItems = [
   },
   { name: "News", href: "/admin/news", icon: NewspaperIcon, current: false },
   { name: "Contact Us", href: "/admin/contact-us", icon: PhoneIcon, current: false },
+  { name: "Logout", href: "/admin/contact-us", icon: PowerIcon, current: false },
 ];
 
 function classNames(...classes: string[]): string {
@@ -100,7 +103,6 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
       }else{
         alert("Logout failed")
       }
-      
     } catch (error) {
       console.log("Something went wrong",error)
     }
@@ -200,7 +202,19 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
                             onToggle={() => setOpenAccordion(openAccordion === item.name ? null : item.name)}
                           />
                         ) : (
-                          <a
+                          item.name==="Logout" ? (<button  onClick={handleLogout} className={classNames(
+                            item.current
+                              ? "bg-gray-50 text-primary"
+                              : "text-gray-700 hover:bg-gray-50 hover:text-primary w-full",
+                            "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+                          )}><item.icon
+                            aria-hidden="true"
+                            className={classNames(
+                              item.current ? "text-primary" : "text-gray-400 group-hover:text-primary",
+                              "h-6 w-6 shrink-0"
+                            )}
+                          />
+                          {item.name}</button>) : (<a
                             href={item.href}
                             className={classNames(
                               item.current
@@ -217,7 +231,7 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
                               )}
                             />
                             {item.name}
-                          </a>
+                          </a>) 
                         )}
                       </li>
                     ))}
@@ -236,8 +250,8 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
                       className="h-8 w-8 rounded-full bg-gray-50"
                     />
                     <span className="sr-only">Your profile</span>
-                    <span aria-hidden="true">Admin</span>
-                    <button onClick={handleLogout}>Logout</button>
+                    <Link href={'/admin/change-credentials'}><span aria-hidden="true">Admin</span></Link>
+                    
                   </a>
                 </li>
               </ul>
