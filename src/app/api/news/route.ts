@@ -14,10 +14,13 @@ export async function POST(req: NextRequest) {
     const content = formData.get("content") as string;
     const date = formData.get("date") as string;
     const image = formData.get("image") as File;
+    const slug = formData.get("slug") as string;
 
     if (!title || !brief || !content || !date || !image) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
+
+    console.log("SLUG",slug)
 
     let imagePath = "";
     if (image && image instanceof File) {
@@ -45,6 +48,7 @@ export async function POST(req: NextRequest) {
       content,
       date: new Date(date),
       image: imagePath,
+      slug
     });
 
     await news.save();
@@ -63,6 +67,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     const limit = parseInt(searchParams.get("limit") || "")
+    const slug = searchParams.get("slug");
 
     console.log("Limit",limit)
     if (id) {
@@ -78,6 +83,12 @@ export async function GET(req: NextRequest) {
       const news = await News.find().sort({ date: -1 }).limit(limit); // Sort by date, newest first
       return NextResponse.json({ news: formatDbResponse(news) });
     
+    }else if(slug){
+      const news = await News.findOne({slug});
+      if (!news) {
+        return NextResponse.json({ error: "News not found" }, { status: 404 });
+      }
+      return NextResponse.json(formatDbResponse(news));
     }else {
       // Fetch all news items
       const news = await News.find().sort({ date: -1 }); // Sort by date, newest first
@@ -103,6 +114,8 @@ export async function PUT(req: NextRequest) {
 
     // Check if a new image is provided
     const newImage = formData.get("image") as File | null;
+
+    console.log("Data",updatedData)
 
     if (newImage && newImage instanceof File) {
       try {
