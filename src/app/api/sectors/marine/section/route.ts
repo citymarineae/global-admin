@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
     const content = formData.get("content") as string;
     const bannerVideo = formData.get("bannerVideo") as string;
     const bannerImage = formData.get("bannerImage") as File;
+    const slug = formData.get("slug") as string
 
 
     if (!image || !subTitle || !title || !content || !bannerImage || !bannerVideo) {
@@ -62,7 +63,8 @@ export async function POST(req: NextRequest) {
       subTitle,
       image: imagePath,
       bannerVideo,
-      bannerImage: bannerImagePath
+      bannerImage: bannerImagePath,
+      slug
     });
 
     await marine.save();
@@ -83,7 +85,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-
+    const slug = searchParams.get("slug");
     // console.log("Id",id)
 
     // const marines = await MarineSection.find({})
@@ -101,6 +103,12 @@ export async function GET(req: NextRequest) {
     if (id) {
       // Fetch a single news item by ID
       const marineSections = await MarineSection.findById(id);
+      if (!marineSections) {
+        return NextResponse.json({ error: "Marine Section not found",id }, { status: 404 });
+      }
+      return NextResponse.json(formatDbResponse(marineSections));
+    }else if(slug){
+      const marineSections = await MarineSection.findOne({slug});
       if (!marineSections) {
         return NextResponse.json({ error: "Marine Section not found",id }, { status: 404 });
       }

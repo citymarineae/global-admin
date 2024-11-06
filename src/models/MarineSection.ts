@@ -24,6 +24,10 @@ const MarineSectionSchema = new mongoose.Schema({
   bannerImage:{
     type:String,
     required:true
+  },
+  slug:{
+    type:String,
+    required:true
   }
 });
 
