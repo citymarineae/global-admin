@@ -8,6 +8,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import Image from "next/image";
 import { toast } from "sonner";
+import { generateSlugForMarineSection } from "@/app/admin/helpers/generateSlug";
 
 type FormData = {
   title: string;
@@ -15,6 +16,7 @@ type FormData = {
   subTitle: string;
   bannerVideo:string;
   bannerImage:string;
+  slug:string;
 };
 
 interface AddMarinePageProps {
@@ -26,6 +28,7 @@ interface AddMarinePageProps {
     image?: string;
     bannerVideo:string;
     bannerImage?:string;
+    slug?:string
   };
   isEditing?: boolean;
 }
@@ -37,6 +40,7 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
     control,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<FormData>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -53,6 +57,9 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
       setValue("content", initialData.content);
       setValue("subTitle", initialData.subTitle);
       setValue("bannerVideo",initialData.bannerVideo)
+      if(initialData.slug){
+        setValue("slug",initialData.slug)
+      }
       if (initialData.image) {
         setPreviewImage(initialData.image as string);
       }
@@ -61,6 +68,10 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
       }
     }
   }, [initialData, setValue]);
+
+  useEffect(()=>{
+    setValue("slug",generateSlugForMarineSection(watch("title")))
+  },[watch("title")])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -197,6 +208,7 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
     formData.append("content", data.content);
     formData.append("subTitle", data.subTitle);
     formData.append("bannerVideo",data.bannerVideo)
+    formData.append("slug",data.slug)
     
     if (imageFile) {
       formData.append("image", imageFile);
@@ -286,6 +298,19 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
               className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
             {errors.bannerVideo && <p className="mt-1 text-sm text-red-600">{errors.bannerVideo.message}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="subTitle" className="block text-sm font-medium text-gray-700">
+              Slug
+            </label>
+            <input
+              {...register("slug", { required: "Banner video is required" })}
+              type="text"
+              id="subTitle"
+              readOnly
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            />
           </div>
 
         </div>
