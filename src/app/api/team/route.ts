@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
     const phone = formData.get("phone") as string;
     const email = formData.get("email") as string;
     const image = formData.get("image") as File;
+    const slug = formData.get("slug") as string;
 
     if (!name || !position || !description || !phone || !email || !image) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
       phone,
       email,
       image: imagePath,
+      slug
     });
 
     await team.save();
@@ -69,6 +71,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
+    const slug = searchParams.get("slug");
 
     if (id) {
       // Fetch a single news item by ID
@@ -77,7 +80,13 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Team member not found" }, { status: 404 });
       }
       return NextResponse.json(formatDbResponse(team));
-    } else {
+    }else if(slug){
+      const team = await Team.findOne({slug});
+      if (!team) {
+        return NextResponse.json({ error: "Team member not found" }, { status: 404 });
+      }
+      return NextResponse.json(formatDbResponse(team));
+    } else { 
       // Fetch all news items
       const members = await Team.find().sort({ date: -1 }); // Sort by date, newest first
       return NextResponse.json(formatDbResponse(members));
