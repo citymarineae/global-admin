@@ -5,13 +5,13 @@ import { jwtVerify, JWTPayload } from "jose";
 export async function middleware(request: NextRequest) {
   const isApiRoute = request.nextUrl.pathname.startsWith("/api");
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
+  const token = request.cookies.get("token")?.value;
 
-  // Allow public access to the admin login page
-  if (request.nextUrl.pathname === "/admin") {
+  //Allow public access to the admin login page
+  if (request.nextUrl.pathname === "/admin" && !token) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get("token")?.value;
 
   // Handle API routes
   if (isApiRoute) {
@@ -61,6 +61,8 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+ 
+
   // Handle admin routes (excluding the login page)
   if (isAdminRoute) {
     if (!token) {
@@ -74,11 +76,16 @@ export async function middleware(request: NextRequest) {
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set("x-user-id", userId);
 
+      if(request.nextUrl.pathname==="/admin" && token){
+        return NextResponse.redirect(new URL("/admin/dashboard",request.url))
+      }
+
       return NextResponse.next({
         request: {
           headers: requestHeaders,
         },
       });
+
     } catch (error) {
       console.error("Token verification failed for admin:", error);
       const response = NextResponse.redirect(new URL("/admin", request.url));
