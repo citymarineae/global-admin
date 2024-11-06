@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { generateSlugForTeamMembers } from "@/app/admin/helpers/generateSlug";
 
 type FormData = {
   name: string;
@@ -11,6 +12,7 @@ type FormData = {
   email: string;
   phone: string;
   description: string;
+  slug:string;
 };
 
 interface ExtendedFormData extends FormData {
@@ -29,6 +31,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
     handleSubmit,
     formState: { errors },
     setValue,
+    watch
   } = useForm<FormData>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -43,11 +46,18 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
       setValue("email", initialData.email);
       setValue("phone", initialData.phone);
       setValue("description", initialData.description);
+      setValue("slug",initialData.slug)
       if (initialData.image) {
         setPreviewImage(initialData.image as string);
       }
     }
   }, [initialData, setValue]);
+
+  useEffect(()=>{
+    setValue("slug",generateSlugForTeamMembers(watch("name")))
+  },[watch("name")])
+
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -119,6 +129,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
     formData.append("email", data.email);
     formData.append("phone", data.phone);
     formData.append("description", data.description);
+    formData.append("slug",data.slug)
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -214,6 +225,21 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
             ></textarea>
             {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
           </div>
+
+          <div>
+            <label htmlFor="position" className="block text-sm font-medium text-gray-700">
+              Slug
+            </label>
+            <input
+              {...register("slug", { required: "Position is required" })}
+              type="text"
+              id="position"
+              readOnly
+              className="mt-1 pl-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+          
         </div>
 
         <div className="flex flex-col justify-between">

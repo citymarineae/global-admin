@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
     const phone = formData.get("phone") as string;
     const email = formData.get("email") as string;
     const image = formData.get("image") as File;
+    const slug = formData.get("slug") as string;
 
     if (!name || !position || !description || !phone || !email || !image) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
       phone,
       email,
       image: imagePath,
+      slug
     });
 
     await team.save();

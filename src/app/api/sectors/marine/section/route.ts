@@ -86,19 +86,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     const slug = searchParams.get("slug");
-    // console.log("Id",id)
-
-    // const marines = await MarineSection.find({})
-
-    // const found = marines.find((item)=>item.replace(/&/g, '-')
-    // .replace(/,/g, '')                  
-    // .replace(/’/g, '-')                  
-    // .replace(/ +/g, '-')                 
-    // .replace(/-+/g, '-')                 
-    // .toLowerCase()                       
-    // .trim() === id)
-
-    // console.log(found)
+    
 
     if (id) {
       // Fetch a single news item by ID
