@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
 import Image from "next/image";
+import Swal from "sweetalert2";
+import { toast } from "sonner";
 
 interface NewsItem {
   id: string;
@@ -16,6 +18,7 @@ interface NewsItem {
 const News = () => {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [refetch,setRefetch] = useState(false);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -31,7 +34,41 @@ const News = () => {
     };
 
     fetchNews();
-  }, []);
+  }, [refetch]);
+
+  const handleDelete = async(itemId:string) =>{
+    
+    Swal.fire({
+      title: "Are you sure about this?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: `No`
+    }).then(async(result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`/api/news?id=${itemId}`,{
+            method:"DELETE"
+          })
+          
+          if(response.ok){
+            const data = await response.json()
+            toast.success(data.message)
+            setRefetch((prev)=>!prev)
+          }else{
+            const data = await response.json()
+            toast.error(data.error)
+          }
+    
+        } catch (error) {
+          console.log("Error deleting marine section:",error)
+        }
+      } else if (result.isDenied) {
+        toast.error("Changes were not saved")
+      }
+    });
+    
+  }
 
   return (
     <AdminPanelLayout currentPage="/admin/news">
@@ -67,12 +104,20 @@ const News = () => {
                   <h2 className="text-xl font-semibold mb-2">{news.title}</h2>
                   <p className="text-gray-600 mb-2">{news.brief}</p>
                   <p className="text-sm text-gray-500 mb-4">{new Date(news.date).toLocaleDateString()}</p>
+                  <div className="flex gap-2">
                   <Link
                     href={`/admin/news/edit/${news.id}`}
-                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
                   >
                     Edit
                   </Link>
+                  <Link onClick={()=>handleDelete(news.id)}
+                    href={`#`}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
+                  >
+                    Delete
+                  </Link>
+                  </div>
                 </div>
               </div>
             ))}
