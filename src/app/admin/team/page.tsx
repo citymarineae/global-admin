@@ -5,6 +5,9 @@ import Link from "next/link";
 import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
 import Image from "next/image";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
+import Swal from "sweetalert2";
+import { toast } from "sonner";
+import 'sweetalert2/src/sweetalert2.scss'
 
 interface Member {
   id: string;
@@ -20,6 +23,7 @@ const Team = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [reOrderMode,setReOrderMode] = useState(false)
+  const [refetch,setRefetch] = useState(false)
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -35,7 +39,7 @@ const Team = () => {
     };
 
     fetchMembers();
-  }, []);
+  }, [refetch]);
 
   const handleDragEnd = (result:DropResult) =>{
     if (members) {
@@ -67,6 +71,41 @@ const Team = () => {
 
     setReOrderMode(false)
   }
+
+  const handleDelete = async(itemId:string) =>{
+    
+    Swal.fire({
+      title: "Are you sure about this?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: `No`
+    }).then(async(result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`/api/team?id=${itemId}`,{
+            method:"DELETE"
+          })
+          
+          if(response.ok){
+            const data = await response.json()
+            toast.success(data.message)
+            setRefetch((prev)=>!prev)
+          }else{
+            const data = await response.json()
+            toast.error(data.error)
+          }
+    
+        } catch (error) {
+          console.log("Error deleting marine section:",error)
+        }
+      } else if (result.isDenied) {
+        toast.error("Changes were not saved")
+      }
+    });
+    
+  }
+  
 
 
   return (
@@ -110,12 +149,20 @@ const Team = () => {
                 <div className="p-4">
                   <h2 className="text-xl font-semibold mb-2">{member.name}</h2>
                   <p className="text-gray-600 mb-2">{member.position}</p>
+                  <div className="flex gap-2">
                   <Link
                     href={`/admin/team/edit/${member.id}`}
-                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
                   >
                     Edit
                   </Link>
+                  <Link href={'#'} onClick={()=>handleDelete(member.id)}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
+                  >
+                    Delete
+                  </Link>
+                  </div>
+                  
                 </div>
               </div>
             ))}

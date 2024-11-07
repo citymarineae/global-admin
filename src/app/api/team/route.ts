@@ -145,3 +145,28 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function DELETE(req:NextRequest) {
+  try {
+    const {searchParams} = new URL(req.url)
+    const id = searchParams.get("id")
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing memeber ID" }, { status: 400 });
+    }
+
+    const member = await Team.deleteOne({_id:id})
+
+    if(member){
+      console.log("Item removed")
+      return NextResponse.json({message:"Member removed successfully"},{status:200})
+    }
+
+    return NextResponse.json({error:"Removing member failed"},{status:400})
+
+
+  } catch (error) {
+    console.error("Error fetching member:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+  }
