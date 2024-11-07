@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd'
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
 import 'sweetalert2/src/sweetalert2.scss'
@@ -19,7 +18,6 @@ type MarineCard = {
 
 const MarineSections = () => {
   
-  const router = useRouter()
 
   const [list, setList] = useState<MarineCard[]>();
   const [refetch,setRefetch] = useState(false)
