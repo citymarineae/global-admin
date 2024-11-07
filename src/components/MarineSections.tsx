@@ -3,6 +3,10 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd'
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Swal from "sweetalert2";
+import 'sweetalert2/src/sweetalert2.scss'
 
 type MarineCard = {
   id: string;
@@ -14,7 +18,11 @@ type MarineCard = {
 
 
 const MarineSections = () => {
+  
+  const router = useRouter()
+
   const [list, setList] = useState<MarineCard[]>();
+  const [refetch,setRefetch] = useState(false)
 
   const fetchData = async () => {
     const response = await fetch("/api/sectors/marine/section", {
@@ -29,7 +37,7 @@ const MarineSections = () => {
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [refetch]);
 
   console.log(list);
 
@@ -68,6 +76,40 @@ const MarineSections = () => {
     setReOrderMode(false)
   }
 
+  const handleDelete = async(itemId:string) =>{
+    
+    Swal.fire({
+      title: "Are you sure about this?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: `No`
+    }).then(async(result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`/api/sectors/marine/section?id=${itemId}`,{
+            method:"DELETE"
+          })
+          
+          if(response.ok){
+            const data = await response.json()
+            toast.success(data.message)
+            setRefetch((prev)=>!prev)
+          }else{
+            const data = await response.json()
+            toast.error(data.error)
+          }
+    
+        } catch (error) {
+          console.log("Error deleting marine section:",error)
+        }
+      } else if (result.isDenied) {
+        toast.error("Changes were not saved")
+      }
+    });
+    
+  }
+
   return (
     <div className="w-full">
       <div className="w-full flex justify-end mb-5 gap-5">
@@ -103,13 +145,23 @@ const MarineSections = () => {
             />
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+              <div className="flex gap-2">
               <Link
                 href={`/admin/sectors/marine/edit/${item.id}`}
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-green-500 hover:bg-green-700 text-white font-semibold p-2 rounded"
               >
                 Edit
               </Link>
+
+              <button
+                onClick={()=>handleDelete(item.id)}
+                className="bg-red-500 hover:bg-red-700 text-white font-semibold p-2 rounded"
+              >
+                Delete
+              </button>
+              </div>
             </div>
+            
           </div>
 
         ))}

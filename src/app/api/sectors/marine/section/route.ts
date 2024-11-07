@@ -189,3 +189,29 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function DELETE(req:NextRequest) {
+  try {
+    const {searchParams} = new URL(req.url)
+    const id = searchParams.get("id")
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing marine section ID" }, { status: 400 });
+    }
+
+    const deleteSection = await MarineSection.deleteOne({_id:id})
+
+    if(deleteSection){
+      console.log("Item removed")
+      return NextResponse.json({message:"Section removed successfully"},{status:200})
+    }
+
+    return NextResponse.json({error:"Removing section failed"},{status:400})
+
+
+  } catch (error) {
+    console.error("Error fetching marine:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+  }
+
