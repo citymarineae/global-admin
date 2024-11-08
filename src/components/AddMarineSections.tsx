@@ -9,6 +9,7 @@ import "react-quill/dist/quill.snow.css";
 import Image from "next/image";
 import { toast } from "sonner";
 import { generateSlugForMarineSection } from "@/app/admin/helpers/generateSlug";
+import { uploadVideoToDropBox } from "@/app/admin/helpers/uploadVideoToDropbox";
 
 type FormData = {
   title: string;
@@ -266,8 +267,8 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
   }, [])
 
 
-
   const onSubmit = async (data: FormData) => {
+    let bannerVideoPath:Promise<string | false> | string | boolean;
     setIsSubmitting(true);
     const formData = new FormData();
     formData.append("title", data.title);
@@ -281,8 +282,15 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
     if (bannerImage) {
       formData.append("bannerImage", bannerImage)
     }
-    if (videoFile) {
-      formData.append("bannerVideo", videoFile)
+    // if (videoFile) {
+    //   formData.append("bannerVideo", videoFile)
+    // }
+    if(videoFile){
+      bannerVideoPath = await uploadVideoToDropBox(videoFile)
+      console.log("Video PAth",bannerVideoPath)
+      if(bannerVideoPath){
+          formData.append("bannerVideo",bannerVideoPath)
+      }
     }
 
     try {
