@@ -8,6 +8,8 @@ type UpdateablePersonalLinesFields = {
   title: string;
   content: string;
   image?: string;
+  metaDataTitle:string;
+  metaDataDesc:string;
 };
 
 export async function POST(req: NextRequest) {
@@ -18,6 +20,8 @@ export async function POST(req: NextRequest) {
     const title = formData.get("title") as string;
     const image = formData.get("image") as File | string;
     const content = formData.get("content") as string;
+    const metaDataTitle = formData.get("metaDataTitle") as string;
+    const metaDataDesc = formData.get("metaDataDesc") as string;
 
     if (!title || !content) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -51,6 +55,8 @@ export async function POST(req: NextRequest) {
     const updateData: UpdateablePersonalLinesFields = {
       title,
       content,
+      metaDataTitle,
+      metaDataDesc
     };
     if (imagePath) {
       updateData.image = imagePath;

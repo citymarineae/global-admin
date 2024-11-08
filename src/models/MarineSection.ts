@@ -28,6 +28,14 @@ const MarineSectionSchema = new mongoose.Schema({
   slug:{
     type:String,
     required:true
+  },
+  metaDataTitle:{
+    type:String,
+    required:false
+  },
+  metaDataDesc:{
+    type:String,
+    required:false
   }
 });
 

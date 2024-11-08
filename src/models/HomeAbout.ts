@@ -12,6 +12,14 @@ const HomeAboutSchema = new mongoose.Schema({
     image:{
         type:String,
         required:true
+    },
+    metaDataTitle:{
+        type:String,
+        required:false
+    },
+    metaDataDesc:{
+        type:String,
+        required:false
     }
 })
 

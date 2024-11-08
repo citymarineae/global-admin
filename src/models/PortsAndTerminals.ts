@@ -21,6 +21,15 @@ const PortsAndTerminalsSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  metaDataTitle:{
+    type:String,
+    required:false
+  },
+  metaDataDesc:{
+    type:String,
+    required:false
+  }
+  
 });
 
 export default mongoose.models.PortsAndTerminals || mongoose.model("PortsAndTerminals", PortsAndTerminalsSchema);

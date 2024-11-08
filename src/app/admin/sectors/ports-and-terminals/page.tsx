@@ -13,6 +13,8 @@ type FormData = {
   title: string;
   contentOne: string;
   contentTwo: string;
+  metaDataTitle:string;
+  metaDataDesc:string;
 };
 
 const PortsAndTerminals = () => {
@@ -43,6 +45,9 @@ const PortsAndTerminals = () => {
     setValue("title", data.title);
     setValue("contentOne", data.contentOne);
     setValue("contentTwo", data.contentTwo);
+    setValue("metaDataTitle",data.metaDataTitle);
+    setValue("metaDataDesc",data.metaDataDesc);
+
     if (data.imageOne) setPreviewImageOne(data.imageOne);
     if (data.imageTwo) setPreviewImageTwo(data.imageTwo);
   };
@@ -110,6 +115,9 @@ const PortsAndTerminals = () => {
     formData.append("title", data.title);
     formData.append("contentOne", data.contentOne);
     formData.append("contentTwo", data.contentTwo);
+    formData.append("metaDataTitle",data.metaDataTitle);
+    formData.append("metaDataDesc",data.metaDataDesc)
+
     if (imageFileOne) formData.append("imageOne", imageFileOne);
     if (imageFileTwo) formData.append("imageTwo", imageFileTwo);
 
@@ -185,6 +193,31 @@ const PortsAndTerminals = () => {
                   />
                   {errors.contentTwo && <p className="mt-1 text-sm text-red-600">{errors.contentTwo.message}</p>}
                 </div>
+
+                <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:title
+            </label>
+            <input
+              type="text"
+              id="metaDataTitle"
+              {...register("metaDataTitle")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:description
+            </label>
+            <input
+              type="text"
+              id="metaDataDesc"
+              {...register("metaDataDesc")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
               </div>
               {/* Right column */}
               <div className="lg:w-1/3 space-y-6">

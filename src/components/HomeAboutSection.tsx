@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation';
 type FormData = {
   title: string;
   content: string;
+  metaDataTitle:string;
+  metaDataDesc:string;
 };
 
 type HomeAboutDataType = {
@@ -20,6 +22,8 @@ type HomeAboutDataType = {
     title:string
     content:string
     image:string
+    metaDataTitle:string
+    metaDataDesc:string
   }
 
 
@@ -56,6 +60,8 @@ const HomeAboutSection = ({editMode}:{
           setHomeAboutData(data.homeabout[0]);
           setValue("title",data.homeabout[0].title)
           setValue("content",data.homeabout[0].content)
+          setValue("metaDataTitle",data.homeabout[0].metaDataTitle)
+          setValue("metaDataDesc",data.homeabout[0].metaDataDesc)
           if (data.homeabout[0].image) {
             setPreviewImage(data.homeabout[0].image as string);
           }
@@ -138,6 +144,8 @@ const HomeAboutSection = ({editMode}:{
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("content", data.content);
+      formData.append("metaDataTitle",data.metaDataTitle)
+      formData.append("metaDataDesc",data.metaDataDesc)
   
       if (imageFile) {
         formData.append("image", imageFile);
@@ -219,6 +227,32 @@ const HomeAboutSection = ({editMode}:{
               )}
             />
             {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:title
+            </label>
+            <input
+              type="text"
+              id="metaDataTitle"
+              readOnly={!editMode}
+              {...register("metaDataTitle")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:description
+            </label>
+            <input
+              type="text"
+              id="metaDataDesc"
+              readOnly={!editMode}
+              {...register("metaDataDesc")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
           </div>
 
           
