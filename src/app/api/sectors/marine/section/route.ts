@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     const subTitle = formData.get("subTitle") as string;
     const image = formData.get("image") as File;
     const content = formData.get("content") as string;
-    const bannerVideo = formData.get("bannerVideo") as File;
+    const bannerVideo = formData.get("bannerVideo") as string;
     const bannerImage = formData.get("bannerImage") as File;
     const slug = formData.get("slug") as string
 
@@ -27,26 +27,24 @@ export async function POST(req: NextRequest) {
 
     let imagePath = "";
     let bannerImagePath = "";
-    let bannerVideoPath = "";
+    
 
-    if (image && image instanceof File && bannerImage && bannerImage instanceof File && bannerVideo && bannerVideo instanceof File) {
+    if (image && image instanceof File && bannerImage && bannerImage instanceof File) {
       try {
         // Create a unique filename
         const filename = `${Date.now()}-${image.name || "image"}`;
         const dropboxPath = `/marineSection/${filename}`;
         const bannerImageName = `${Date.now()}-${bannerImage.name || "bannerImage"}`;
         const bannerDropboxPath = `/marineSectionBanner/${bannerImageName}`;
-        const bannerVideoName = `${Date.now()}-${bannerVideo.name || "bannerVideo"}`
-        const bannerVideoDropboxPath = `/marineSectionBannerVideo/${bannerVideoName}`;
 
         // Upload to Dropbox
         imagePath = await uploadToDropbox(image, dropboxPath);
         bannerImagePath = await uploadToDropbox(bannerImage, bannerDropboxPath);
-        bannerVideoPath = await uploadToDropbox(bannerVideo,bannerVideoDropboxPath);
+        
 
         console.log("Image uploaded to Dropbox:", imagePath);
         console.log("Banner uploaded to Dropbox:", bannerDropboxPath);
-        console.log("Banner video uploaded to Dropbox:", bannerDropboxPath);
+        
 
       } catch (error) {
         console.error("Error uploading to Dropbox:", error);
@@ -55,8 +53,7 @@ export async function POST(req: NextRequest) {
     } else if (image && typeof image === "string" && bannerImage && typeof bannerImage === "string" && bannerImage && typeof bannerVideo === "string") {
       // do nothing
       imagePath = image;
-      bannerImagePath = bannerImage;
-      bannerVideoPath = bannerVideo; // use the provided image path
+      bannerImagePath = bannerImage; // use the provided image path
     } else {
       console.log("No valid image file received");
       return NextResponse.json({ error: "Invalid image file" }, { status: 400 });
@@ -70,7 +67,7 @@ export async function POST(req: NextRequest) {
       content,
       subTitle,
       image: imagePath,
-      bannerVideo:bannerVideoPath,
+      bannerVideo,
       bannerImage: bannerImagePath,
       slug
     });
@@ -135,7 +132,6 @@ export async function PUT(req: NextRequest) {
     // Check if a new image is provided
     const newImage = formData.get("image") as File | null;
     const newBannerImage = formData.get("bannerImage") as File | null;
-    const newBannerVideo = formData.get("bannerVideo") as File | null;
 
     if (newImage && newImage instanceof File) {
       try {
@@ -180,29 +176,29 @@ export async function PUT(req: NextRequest) {
 
     }
 
-      if (newBannerVideo && newBannerVideo instanceof File) {
-        try {
-          // Create a unique filename
-          const filename = `${Date.now()}-${newBannerVideo.name || "bannerVideo"}`;
-          const dropboxPath = `/sectorsBannerVideo/${filename}`;
+      // if (newBannerVideo && newBannerVideo instanceof File) {
+      //   try {
+      //     // Create a unique filename
+      //     const filename = `${Date.now()}-${newBannerVideo.name || "bannerVideo"}`;
+      //     const dropboxPath = `/sectorsBannerVideo/${filename}`;
   
-          // Upload to Dropbox
-          const videoPath = await uploadToDropbox(newBannerVideo, dropboxPath);
+      //     // Upload to Dropbox
+      //     const videoPath = await uploadToDropbox(newBannerVideo, dropboxPath);
   
-          console.log("New image uploaded to Dropbox:", videoPath);
+      //     console.log("New image uploaded to Dropbox:", videoPath);
   
-          // Update the image path in the updatedData
-          updatedData.bannerVideo = videoPath;
-        } catch (error) {
-          console.error("Error uploading new video to Dropbox:", error);
-          return NextResponse.json({ error: "Error uploading new image" }, { status: 500 });
-        }
+      //     // Update the image path in the updatedData
+      //     updatedData.bannerVideo = videoPath;
+      //   } catch (error) {
+      //     console.error("Error uploading new video to Dropbox:", error);
+      //     return NextResponse.json({ error: "Error uploading new image" }, { status: 500 });
+      //   }
 
-    } else {
-      // If no new image is provided, remove the image field from updatedData
-      // to prevent overwriting the existing image path with null
-      delete updatedData.bannerVideo;
-    }
+    // } else {
+    //   // If no new image is provided, remove the image field from updatedData
+    //   // to prevent overwriting the existing image path with null
+    //   delete updatedData.bannerVideo;
+    // }
 
     const marineSection = await MarineSection.findByIdAndUpdate(id, updatedData, { new: true });
 
