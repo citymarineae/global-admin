@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -14,9 +14,9 @@ type FormData = {
   title: string;
   content: string;
   subTitle: string;
-  bannerVideo:string;
-  bannerImage:string;
-  slug:string;
+  bannerVideo: string;
+  bannerImage: string;
+  slug: string;
 };
 
 interface AddMarinePageProps {
@@ -26,9 +26,9 @@ interface AddMarinePageProps {
     subTitle: string;
     content: string;
     image?: string;
-    bannerVideo:string;
-    bannerImage?:string;
-    slug?:string
+    bannerVideo: string;
+    bannerImage?: string;
+    slug?: string
   };
   isEditing?: boolean;
 }
@@ -44,11 +44,14 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
   } = useForm<FormData>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewVideo, setPreviewVideo] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
-  const [bannerImageError,setBannerImageError] = useState<string | null>(null)
-  const [bannerImage,setBannerImage] = useState<File | null>(null)
-  const [previewImageBanner,setPreviewImageBanner] = useState<string | null>(null)
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [bannerImageError, setBannerImageError] = useState<string | null>(null)
+  const [bannerImage, setBannerImage] = useState<File | null>(null)
+  const [previewImageBanner, setPreviewImageBanner] = useState<string | null>(null)
   const router = useRouter();
 
   useEffect(() => {
@@ -56,22 +59,25 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
       setValue("title", initialData.title);
       setValue("content", initialData.content);
       setValue("subTitle", initialData.subTitle);
-      setValue("bannerVideo",initialData.bannerVideo)
-      if(initialData.slug){
-        setValue("slug",initialData.slug)
+
+      if (initialData.slug) {
+        setValue("slug", initialData.slug)
       }
       if (initialData.image) {
         setPreviewImage(initialData.image as string);
       }
-      if(initialData.bannerImage){
+      if (initialData.bannerImage) {
         setPreviewImageBanner(initialData.bannerImage as string)
+      }
+      if (initialData.bannerVideo) {
+        setPreviewVideo(initialData.bannerVideo as string)
       }
     }
   }, [initialData, setValue]);
 
-  useEffect(()=>{
-    setValue("slug",generateSlugForMarineSection(watch("title")))
-  },[watch("title")])
+  useEffect(() => {
+    setValue("slug", generateSlugForMarineSection(watch("title")))
+  }, [watch("title")])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -107,7 +113,38 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
     }
   };
 
-  const handleBannerImageChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Called")
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate the video file type
+      const validVideoTypes = ["video/mp4", "video/webm", "video/ogg"];
+      if (!validVideoTypes.includes(file.type)) {
+        setVideoError("Please select a video file (MP4, WebM, or Ogg)");
+        return;
+      }
+
+      const maxSize = 50 * 1024 * 1024; // 50MB for video files
+      if (file.size > maxSize) {
+        setVideoError("Video file size must not exceed 50MB");
+        return;
+      }
+
+      const videoUrl = URL.createObjectURL(file);
+      setPreviewVideo(videoUrl);
+      setVideoFile(file)
+
+      return () => {
+        URL.revokeObjectURL(videoUrl);
+      };
+    } else {
+      setPreviewVideo(null)
+      setVideoFile(null)
+    }
+
+  }
+
+  const handleBannerImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (file) {
@@ -170,7 +207,7 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
     }
   }, []);
 
-  
+
   const onBannerDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
@@ -200,6 +237,35 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
     }
   }, []);
 
+  const onDropVideo = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      // Validate the video file type
+      const validVideoTypes = ["video/mp4", "video/webm", "video/ogg"];
+      if (!validVideoTypes.includes(file.type)) {
+        setVideoError("Please select a video file (MP4, WebM, or Ogg)");
+        return;
+      }
+
+      const maxSize = 50 * 1024 * 1024; // 50MB for video files
+      if (file.size > maxSize) {
+        setVideoError("Video file size must not exceed 50MB");
+        return;
+      }
+
+      const videoUrl = URL.createObjectURL(file);
+      setPreviewVideo(videoUrl);
+      setVideoFile(file)
+
+      return () => {
+        URL.revokeObjectURL(videoUrl);
+      };
+    }
+
+  }, [])
+
+
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -207,14 +273,16 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
     formData.append("title", data.title);
     formData.append("content", data.content);
     formData.append("subTitle", data.subTitle);
-    formData.append("bannerVideo",data.bannerVideo)
-    formData.append("slug",data.slug)
-    
+    formData.append("slug", data.slug)
+
     if (imageFile) {
       formData.append("image", imageFile);
     }
-    if(bannerImage) {
-      formData.append("bannerImage",bannerImage)
+    if (bannerImage) {
+      formData.append("bannerImage", bannerImage)
+    }
+    if (videoFile) {
+      formData.append("bannerVideo", videoFile)
     }
 
     try {
@@ -226,7 +294,7 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
       });
       const data = await response.json();
       if (!data || data.error) {
-        toast.error("Failed to update Please try again.");
+        toast.error(data.error);
         return;
       }
       console.log(data);
@@ -287,7 +355,7 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
             {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>}
           </div>
 
-          <div>
+          {/* <div>
             <label htmlFor="subTitle" className="block text-sm font-medium text-gray-700">
               Banner Video
             </label>
@@ -298,7 +366,64 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
               className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
             {errors.bannerVideo && <p className="mt-1 text-sm text-red-600">{errors.bannerVideo.message}</p>}
+          </div> */}
+
+          <div>
+            <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
+              Banner Image
+            </label>
+            <div
+              className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer overflow-hidden"
+              onDrop={onBannerDrop}
+              onDragOver={(e) => e.preventDefault()}
+              onClick={() => document?.getElementById("bannerImage")?.click()}
+            >
+              {previewImageBanner ? (
+                <div className="relative w-full h-full">
+                  <Image src={previewImageBanner} alt="Preview" layout="fill" objectFit="cover" />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPreviewImageBanner(null); // Clear the preview image
+                      setBannerImage(null);
+                    }}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <svg
+                    className="mx-auto h-12 w-12 text-gray-400"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 48 48"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <p className="mt-1 text-sm text-gray-600">Drag and drop an image here, or click to select a file</p>
+                </>
+              )}
+              <input type="file" id="bannerImage" accept="image/*" className="hidden" onChange={handleBannerImageChange} />
+            </div>
+            {bannerImageError && <p className="mt-1 text-sm text-red-600">{bannerImageError}</p>}
           </div>
+
+
 
           <div>
             <label htmlFor="subTitle" className="block text-sm font-medium text-gray-700">
@@ -372,25 +497,28 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
             {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
           </div>
 
+
           <div>
             <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
-              Banner Image
+              Banner Video
             </label>
             <div
               className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer overflow-hidden"
-              onDrop={onBannerDrop}
+              onDrop={onDropVideo}
               onDragOver={(e) => e.preventDefault()}
-              onClick={() => document?.getElementById("bannerImage")?.click()}
+              onClick={() => document?.getElementById("video")?.click()}
             >
-              {previewImageBanner ? (
+              {previewVideo ? (
                 <div className="relative w-full h-full">
-                  <Image src={previewImageBanner} alt="Preview" layout="fill" objectFit="cover" />
+                  <video width="100%" height="100%" controls style={{ objectFit: "cover" }}>
+                    <source src={previewVideo || ""} type="video/mp4" />
+                  </video>
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setPreviewImageBanner(null); // Clear the preview image
-                      setBannerImage(null);
+                      setPreviewVideo(null);
+                      setVideoFile(null) // Clear the preview image
                     }}
                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
                   >
@@ -405,26 +533,16 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
                 </div>
               ) : (
                 <>
-                  <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 48 48"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
                   </svg>
-                  <p className="mt-1 text-sm text-gray-600">Drag and drop an image here, or click to select a file</p>
+
+                  <p className="mt-1 text-sm text-gray-600">Drag and drop an video here, or click to select a file</p>
                 </>
               )}
-              <input type="file" id="bannerImage" accept="image/*" className="hidden" onChange={handleBannerImageChange} />
+              <input type="file" id="video" accept="video/mp4, video/avi" className="hidden" onChange={handleVideoChange} />
             </div>
-            {bannerImageError && <p className="mt-1 text-sm text-red-600">{bannerImageError}</p>}
+            {videoError && <p className="mt-1 text-sm text-red-600">{videoError}</p>}
           </div>
 
 
