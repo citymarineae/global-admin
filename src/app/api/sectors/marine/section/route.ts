@@ -17,6 +17,8 @@ export async function POST(req: NextRequest) {
     const bannerVideo = formData.get("bannerVideo") as string;
     const bannerImage = formData.get("bannerImage") as File;
     const slug = formData.get("slug") as string
+    const metaDataTitle = formData.get("metaDataTitle") as string;
+    const metaDataDesc = formData.get("metaDataDesc") as string;
 
     console.log("Video",bannerVideo)
 
@@ -69,7 +71,9 @@ export async function POST(req: NextRequest) {
       image: imagePath,
       bannerVideo,
       bannerImage: bannerImagePath,
-      slug
+      slug,
+      metaDataTitle,
+      metaDataDesc
     });
 
     await marine.save();

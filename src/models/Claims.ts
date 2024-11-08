@@ -16,6 +16,14 @@ const ClaimsShema = new mongoose.Schema({
     image:{
         type:String,
         required:false
+    },
+    metaDataTitle:{
+        type:String,
+        required:false
+    },
+    metaDataDesc:{
+        type:String,
+        required:false
     }
 })
 

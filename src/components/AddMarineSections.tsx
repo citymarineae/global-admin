@@ -18,6 +18,8 @@ type FormData = {
   bannerVideo: string;
   bannerImage: string;
   slug: string;
+  metaDataTitle:string;
+  metaDataDesc:string;
 };
 
 interface AddMarinePageProps {
@@ -29,7 +31,9 @@ interface AddMarinePageProps {
     image?: string;
     bannerVideo: string;
     bannerImage?: string;
-    slug?: string
+    slug?: string;
+    metaDataTitle:string;
+    metaDataDesc:string;
   };
   isEditing?: boolean;
 }
@@ -60,6 +64,8 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
       setValue("title", initialData.title);
       setValue("content", initialData.content);
       setValue("subTitle", initialData.subTitle);
+      setValue("metaDataTitle",initialData.metaDataTitle)
+      setValue("metaDataDesc",initialData.metaDataDesc)
 
       if (initialData.slug) {
         setValue("slug", initialData.slug)
@@ -275,6 +281,8 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
     formData.append("content", data.content);
     formData.append("subTitle", data.subTitle);
     formData.append("slug", data.slug)
+    formData.append("metaDataTitle",data.metaDataTitle)
+    formData.append("metaDataDesc",data.metaDataDesc)
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -443,6 +451,30 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
               id="subTitle"
               readOnly
               className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:title
+            </label>
+            <input
+              type="text"
+              id="metaDataTitle"
+              {...register("metaDataTitle")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:description
+            </label>
+            <input
+              type="text"
+              id="metaDataDesc"
+              {...register("metaDataDesc")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
             />
           </div>
 

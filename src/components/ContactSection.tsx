@@ -11,7 +11,7 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/re
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Quill } from 'react-quill'
 const Block = Quill.import('blots/block');
-class DivBlock extends Block {} 
+class DivBlock extends Block { }
 DivBlock.tagName = 'DIV';
 // true means we overwrite  
 Quill.register('blots/block', DivBlock, true);
@@ -22,6 +22,8 @@ type FormData = {
     fax: string
     map: string
     address: string
+    metaDataTitle:string
+    metaDataDesc:string
 }
 
 type ContactData = {
@@ -60,6 +62,9 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
                     setValue("fax", data.contact[0].fax)
                     setValue("map", data.contact[0].map)
                     setValue("address", data.contact[0].address)
+                    setValue("metaDataTitle",data.contact[0].metaDataTitle)
+                    setValue("metaDataDesc",data.contact[0].metaDataDesc)
+
                     if (data.contact[0].map) {
                         setPreviewMap(true)
                         setContactData(data.contact[0])
@@ -81,7 +86,7 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
     const [previewMap, setPreviewMap] = useState(false)
     const [contactData, setContactData] = useState<ContactData | null>(null)
     const [loading, setLoading] = useState(true)
-    const [previewContent,setPreviewContent] = useState<string>("")
+    const [previewContent, setPreviewContent] = useState<string>("")
 
     const onSubmit = async (data: FormData) => {
         setIsSubmitting(true);
@@ -90,6 +95,8 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
         formData.append("fax", data.fax);
         formData.append("map", data.map);
         formData.append("address", data.address);
+        formData.append("metaDataTitle",data.metaDataTitle);
+        formData.append("metaDataDesc",data.metaDataDesc);
 
         try {
             const url = `/api/contact-us?id=${contactData?.id}`;
@@ -119,11 +126,11 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
         toolbar: editMode ? editMode : false,
         clipboard: {
             matchVisual: false
-          },
+        },
     }
 
 
-    const handleModalOpen = () =>{
+    const handleModalOpen = () => {
         setPreviewContent(watch("address"))
         setOpen(true)
     }
@@ -191,6 +198,32 @@ const ContactSection = ({ editMode }: { editMode?: boolean }) => {
                                 )}
                             />
                             {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>}
+                        </div>
+
+                        <div>
+                            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                                Metadata:title
+                            </label>
+                            <input
+                                type="text"
+                                id="metaDataTitle"
+                                readOnly={!editMode}
+                                {...register("metaDataTitle")}
+                                className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                                Metadata:description
+                            </label>
+                            <input
+                                type="text"
+                                id="metaDataDesc"
+                                readOnly={!editMode}
+                                {...register("metaDataDesc")}
+                                className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+                            />
                         </div>
 
                         {editMode && <div>

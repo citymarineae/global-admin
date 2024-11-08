@@ -16,6 +16,8 @@ type FormData = {
   content: string;
   date: string;
   slug:string;
+  metaDataTitle:string;
+  metaDataDesc:string;
 };
 
 interface AddNewsPageProps {
@@ -27,6 +29,8 @@ interface AddNewsPageProps {
     image?: string;
     date: string;
     slug:string;
+    metaDataTitle:string;
+    metaDataDesc:string;
   };
   isEditing?: boolean;
 }
@@ -53,6 +57,9 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
       setValue("content", initialData.content);
       setValue("date", format(new Date(initialData.date), "yyyy-MM-dd"));
       setValue("slug",initialData.slug)
+      setValue("metaDataTitle",initialData.metaDataTitle)
+      setValue("metaDataDesc",initialData.metaDataDesc)
+      
       if (initialData.image) {
         setPreviewImage(initialData.image as string);
       }
@@ -130,6 +137,8 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
     formData.append("content", data.content);
     formData.append("date", data.date);
     formData.append("slug",data.slug);
+    formData.append("metaDataTitle",data.metaDataTitle);
+    formData.append("metaDataDesc",data.metaDataDesc);
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -217,6 +226,32 @@ export default function AddNews({ initialData, isEditing = false }: AddNewsPageP
             />
             {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>}
           </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:title
+            </label>
+            <input
+              type="text"
+              id="metaDataTitle"
+              {...register("metaDataTitle")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:description
+            </label>
+            <input
+              type="text"
+              id="metaDataDesc"
+              {...register("metaDataDesc")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+
         </div>
 
         {/* Right column */}

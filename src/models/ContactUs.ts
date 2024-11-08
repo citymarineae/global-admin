@@ -16,6 +16,14 @@ const ContactUsSchema = new mongoose.Schema({
     map:{
         type:String,
         required:true
+    },
+    metaDataTitle:{
+        type:String,
+        required:false
+    },
+    metaDataDesc:{
+        type:String,
+        required:false
     }
 })
 

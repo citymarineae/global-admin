@@ -52,7 +52,7 @@ const navigationItems = [
   },
   { name: "News", href: "/admin/news", icon: NewspaperIcon, current: false },
   { name: "Contact Us", href: "/admin/contact-us", icon: PhoneIcon, current: false },
-  { name: "Logout", href: "/admin/contact-us", icon: PowerIcon, current: false },
+  { name: "Logout", href: "/admin/contact-us", icon: PowerIcon },
 ];
 
 function classNames(...classes: string[]): string {
@@ -202,10 +202,8 @@ export default function AdminPanelLayout({ children, currentPage }: AdminPanelLa
                             onToggle={() => setOpenAccordion(openAccordion === item.name ? null : item.name)}
                           />
                         ) : (
-                          item.name==="Logout" ? (<button  onClick={handleLogout} className={classNames(
-                            item.current
-                              ? "bg-gray-50 text-primary"
-                              : "text-gray-700 hover:bg-gray-50 hover:text-primary w-full",
+                          item.name==="Logout" ? (<button onClick={handleLogout} className={classNames(
+                            "text-gray-700 hover:bg-gray-50 hover:text-primary w-full",
                             "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
                           )}><item.icon
                             aria-hidden="true"

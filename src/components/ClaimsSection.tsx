@@ -14,6 +14,8 @@ type FormData = {
   pageHeading: string
   contentHeading: string
   content: string
+  metaDataTitle:string
+  metaDataDesc:string
 }
 
 type ClaimsData = {
@@ -54,6 +56,9 @@ const ClaimsSection = ({ editMode }: { editMode?: boolean }) => {
           setValue("pageHeading",data.claims[0].pageHeading)
           setValue("contentHeading",data.claims[0].contentHeading)
           setValue("content",data.claims[0].content)
+          setValue("metaDataTitle",data.claims[0].metaDataTitle)
+          setValue("metaDataDesc",data.claims[0].metaDataDesc)
+          
           if (data.claims[0].image) {
             setPreviewImage(data.claims[0].image as string);
           }
@@ -108,6 +113,8 @@ const ClaimsSection = ({ editMode }: { editMode?: boolean }) => {
     formData.append("pageHeading", data.pageHeading);
     formData.append("contentHeading", data.contentHeading);
     formData.append("content", data.content);
+    formData.append("metaDataTitle",data.metaDataTitle);
+    formData.append("metaDataDesc",data.metaDataDesc)
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -237,6 +244,31 @@ const ClaimsSection = ({ editMode }: { editMode?: boolean }) => {
             {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>}
           </div>
 
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:title
+            </label>
+            <input
+              type="text"
+              id="metaDataTitle"
+              readOnly={!editMode}
+              {...register("metaDataTitle")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:description
+            </label>
+            <input
+              type="text"
+              id="metaDataDesc"
+              readOnly={!editMode}
+              {...register("metaDataDesc")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
 
         </div>
 

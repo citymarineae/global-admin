@@ -4,7 +4,7 @@ import AdminPanelLayout from "@/components/layouts/AdminPanelLayout";
 
 export default function AddNewsPage() {
   return (
-    <AdminPanelLayout currentPage="/admin/news">
+    <AdminPanelLayout currentPage="/admin/sectors/marine">
       <AddMarine />
     </AdminPanelLayout>
   );

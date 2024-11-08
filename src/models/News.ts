@@ -29,6 +29,14 @@ const NewsSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  metaDataTitle:{
+    type:String,
+    required:false
+  },
+  metaDataDesc:{
+    type:String,
+    required:false
+  }
 });
 
 export default mongoose.models.News || mongoose.model("News", NewsSchema);

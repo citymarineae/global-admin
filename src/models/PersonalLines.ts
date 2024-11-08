@@ -17,6 +17,15 @@ const PersonalLinesSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  metaDataTitle:{
+    type:String,
+    required:false
+  },
+  metaDataDesc:{
+    type:String,
+    required:false
+  }
+  
 });
 
 export default mongoose.models.PersonalLines || mongoose.model("PersonalLines", PersonalLinesSchema);

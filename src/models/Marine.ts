@@ -17,6 +17,14 @@ const MarineSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  metaDataTitle:{
+    type:String,
+    required:false
+  },
+  metaDataDesc:{
+    type:String,
+    required:false
+  }
 });
 
 export default mongoose.models.Marine || mongoose.model("Marine", MarineSchema);

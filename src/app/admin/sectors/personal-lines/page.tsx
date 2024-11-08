@@ -12,6 +12,8 @@ import { toast } from "sonner";
 type FormData = {
   title: string;
   content: string;
+  metaDataTitle:string;
+  metaDataDesc:string;
 };
 
 const PersonalLines = () => {
@@ -40,6 +42,9 @@ const PersonalLines = () => {
 
     setValue("title", data.title);
     setValue("content", data.content);
+    setValue("metaDataTitle",data.metaDataTitle)
+    setValue("metaDataDesc",data.metaDataDesc)
+
     if (data.image) {
       setPreviewImage(data.image as string);
     }
@@ -117,6 +122,8 @@ const PersonalLines = () => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
+    formData.append("metaDataTitle",data.metaDataTitle);
+    formData.append("metaDataDesc",data.metaDataDesc);
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -134,6 +141,7 @@ const PersonalLines = () => {
       }
       setValue("title", data.personalLines.title);
       setValue("content", data.personalLines.content);
+
       if (data.personalLines.image) {
         setPreviewImage(data.personalLines.image as string);
       }
@@ -181,6 +189,31 @@ const PersonalLines = () => {
                   />
                   {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>}
                 </div>
+
+                <div>
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                    Metadata:title
+                  </label>
+                  <input
+                    type="text"
+                    id="metaDataTitle"
+                    {...register("metaDataTitle")}
+                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                    Metadata:description
+                  </label>
+                  <input
+                    type="text"
+                    id="metaDataDesc"
+                    {...register("metaDataDesc")}
+                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+                  />
+                </div>
+
               </div>
 
               {/* Right column */}

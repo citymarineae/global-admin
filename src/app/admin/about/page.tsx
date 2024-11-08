@@ -14,6 +14,8 @@ type aboutDataType = {
   contentHeading:string
   content:string
   image?:string
+  metaDataTitle:string
+  metaDataDesc:string
 }
 
 const AboutPage = () => {
@@ -118,6 +120,32 @@ const AboutPage = () => {
               Full Content
             </label>
                 <ReactQuill theme="snow" value={aboutData?.content} className="mt-1" readOnly={!editMode} modules={editorModule}/>
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:title
+            </label>
+            <input
+              type="text"
+              id="metaDataTitle"
+              readOnly={!editMode}
+              value={aboutData?.metaDataTitle}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Metadata:description
+            </label>
+            <input
+              type="text"
+              id="metaDataDesc"
+              readOnly={!editMode}
+              value={aboutData?.metaDataDesc}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
           </div>
 
           
