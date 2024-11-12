@@ -24,6 +24,14 @@ const HomeAboutSchema = new mongoose.Schema({
     altTag:{
         type:String,
         required:false
+    },
+    bannerVideo1:{
+        type:String,
+        required:true
+    },
+    bannerVideo2:{
+        type:String,
+        required:true
     }
 })
 
