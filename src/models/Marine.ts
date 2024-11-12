@@ -24,7 +24,11 @@ const MarineSchema = new mongoose.Schema({
   metaDataDesc:{
     type:String,
     required:false
-  }
+  },
+  altTag:{
+    type:String,
+    required:false
+}
 });
 
 export default mongoose.models.Marine || mongoose.model("Marine", MarineSchema);

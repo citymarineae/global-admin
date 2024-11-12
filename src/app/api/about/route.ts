@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     // Check if a new image is provided
     const newImage = formData.get("image") as File | null;
 
-    console.log("Imga==",newImage)
+    
 
     if (newImage && newImage instanceof File) {
       try {

@@ -15,6 +15,7 @@ type FormData = {
   content: string;
   metaDataTitle:string;
   metaDataDesc:string;
+  altTag:string;
 };
 
 type HomeAboutDataType = {
@@ -24,6 +25,7 @@ type HomeAboutDataType = {
     image:string
     metaDataTitle:string
     metaDataDesc:string
+    altTag:string;
   }
 
 
@@ -62,6 +64,7 @@ const HomeAboutSection = ({editMode}:{
           setValue("content",data.homeabout[0].content)
           setValue("metaDataTitle",data.homeabout[0].metaDataTitle)
           setValue("metaDataDesc",data.homeabout[0].metaDataDesc)
+          setValue("altTag",data.homeabout[0].altTag)
           if (data.homeabout[0].image) {
             setPreviewImage(data.homeabout[0].image as string);
           }
@@ -146,6 +149,7 @@ const HomeAboutSection = ({editMode}:{
       formData.append("content", data.content);
       formData.append("metaDataTitle",data.metaDataTitle)
       formData.append("metaDataDesc",data.metaDataDesc)
+      formData.append("altTag",data.altTag)
   
       if (imageFile) {
         formData.append("image", imageFile);
@@ -313,6 +317,19 @@ const HomeAboutSection = ({editMode}:{
               {editMode && <input type="file" id="image" accept="image/*" className="hidden" onChange={handleImageChange} />}
             </div>
             {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Alt Tag
+            </label>
+            <input
+              type="text"
+              id="Alt Tag"
+              readOnly={!editMode}
+              {...register("altTag")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
           </div>
 
           {editMode && <div>

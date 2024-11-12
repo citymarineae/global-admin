@@ -28,6 +28,14 @@ const PortsAndTerminalsSchema = new mongoose.Schema({
   metaDataDesc:{
     type:String,
     required:false
+  },
+  altTagImageOne:{
+    type:String,
+    required:false
+  },
+  altTagImageTwo:{
+    type:String,
+    required:false
   }
   
 });

@@ -16,6 +16,8 @@ export async function POST(req: NextRequest) {
     const contentTwo = formData.get("contentTwo") as string;
     const metaDataTitle = formData.get("metaDataTitle") as string;
     const metaDataDesc = formData.get("metaDataDesc") as string;
+    const altTagImageOne = formData.get("altTagImageOne") as string;
+    const altTagImageTwo = formData.get("altTagImageTwo") as string;
 
     if (!title || !contentOne || !contentTwo) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -56,7 +58,9 @@ export async function POST(req: NextRequest) {
         imageOne: imageOnePath,
         imageTwo: imageTwoPath,
         metaDataTitle,
-        metaDataDesc
+        metaDataDesc,
+        altTagImageOne,
+        altTagImageTwo
       },
       {
         new: true, // return the updated document

@@ -19,6 +19,8 @@ export async function POST(req: NextRequest) {
     const slug = formData.get("slug") as string
     const metaDataTitle = formData.get("metaDataTitle") as string;
     const metaDataDesc = formData.get("metaDataDesc") as string;
+    const altTag = formData.get("altTag") as string;
+    const altTagBanner = formData.get("altTagBanner") as string;
 
     console.log("Video",bannerVideo)
 
@@ -73,7 +75,9 @@ export async function POST(req: NextRequest) {
       bannerImage: bannerImagePath,
       slug,
       metaDataTitle,
-      metaDataDesc
+      metaDataDesc,
+      altTag,
+      altTagBanner
     });
 
     await marine.save();

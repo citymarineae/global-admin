@@ -13,8 +13,10 @@ type FormData = {
   title: string;
   contentOne: string;
   contentTwo: string;
-  metaDataTitle:string;
-  metaDataDesc:string;
+  metaDataTitle: string;
+  metaDataDesc: string;
+  altTagImageOne: string;
+  altTagImageTwo: string;
 };
 
 const PortsAndTerminals = () => {
@@ -45,8 +47,10 @@ const PortsAndTerminals = () => {
     setValue("title", data.title);
     setValue("contentOne", data.contentOne);
     setValue("contentTwo", data.contentTwo);
-    setValue("metaDataTitle",data.metaDataTitle);
-    setValue("metaDataDesc",data.metaDataDesc);
+    setValue("metaDataTitle", data.metaDataTitle);
+    setValue("metaDataDesc", data.metaDataDesc);
+    setValue("altTagImageOne",data.altTagImageOne);
+    setValue("altTagImageTwo",data.altTagImageTwo)
 
     if (data.imageOne) setPreviewImageOne(data.imageOne);
     if (data.imageTwo) setPreviewImageTwo(data.imageTwo);
@@ -115,8 +119,10 @@ const PortsAndTerminals = () => {
     formData.append("title", data.title);
     formData.append("contentOne", data.contentOne);
     formData.append("contentTwo", data.contentTwo);
-    formData.append("metaDataTitle",data.metaDataTitle);
-    formData.append("metaDataDesc",data.metaDataDesc)
+    formData.append("metaDataTitle", data.metaDataTitle);
+    formData.append("metaDataDesc", data.metaDataDesc)
+    formData.append("altTagImageOne",data.altTagImageOne)
+    formData.append("altTagImageTwo",data.altTagImageTwo)
 
     if (imageFileOne) formData.append("imageOne", imageFileOne);
     if (imageFileTwo) formData.append("imageTwo", imageFileTwo);
@@ -195,28 +201,28 @@ const PortsAndTerminals = () => {
                 </div>
 
                 <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-              Metadata:title
-            </label>
-            <input
-              type="text"
-              id="metaDataTitle"
-              {...register("metaDataTitle")}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
-            />
-          </div>
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                    Metadata:title
+                  </label>
+                  <input
+                    type="text"
+                    id="metaDataTitle"
+                    {...register("metaDataTitle")}
+                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+                  />
+                </div>
 
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-              Metadata:description
-            </label>
-            <input
-              type="text"
-              id="metaDataDesc"
-              {...register("metaDataDesc")}
-              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
-            />
-          </div>
+                <div>
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                    Metadata:description
+                  </label>
+                  <input
+                    type="text"
+                    id="metaDataDesc"
+                    {...register("metaDataDesc")}
+                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+                  />
+                </div>
 
               </div>
               {/* Right column */}
@@ -295,6 +301,17 @@ const PortsAndTerminals = () => {
                       className="hidden"
                       onChange={handleImageChange(num as 1 | 2)}
                     />
+                    <div className="mt-2">
+                      <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                        Alt Tag {num == 1 ? "(Image 1)" : "(Image 2)"}
+                      </label>
+                      <input
+                        type="text"
+                        id="Alt Tag"
+                        {...register(num == 1 ? "altTagImageOne":"altTagImageTwo")}
+                        className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+                      />
+                    </div>
                     {num === 1 && imageErrorOne && <p className="mt-1 text-sm text-red-600">{imageErrorOne}</p>}
                     {num === 2 && imageErrorTwo && <p className="mt-1 text-sm text-red-600">{imageErrorTwo}</p>}
                   </div>

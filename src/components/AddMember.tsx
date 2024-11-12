@@ -15,6 +15,7 @@ type FormData = {
   slug:string;
   metaDataTitle:string;
   metaDataDesc:string;
+  altTag:string;
 };
 
 interface ExtendedFormData extends FormData {
@@ -51,6 +52,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
       setValue("slug",initialData.slug)
       setValue("metaDataTitle",initialData.metaDataTitle)
       setValue("metaDataDesc",initialData.metaDataDesc)
+      setValue("altTag",initialData.altTag)
       
       if (initialData.image) {
         setPreviewImage(initialData.image as string);
@@ -137,6 +139,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
     formData.append("slug",data.slug)
     formData.append("metaDataTitle",data.metaDataTitle)
     formData.append("metaDataDesc",data.metaDataDesc)
+    formData.append("altTag",data.altTag)
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -273,7 +276,7 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
           
         </div>
 
-        <div className="flex flex-col justify-between">
+        <div className="flex flex-col">
           <div>
             <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
               Image
@@ -327,6 +330,18 @@ export default function AddMember({ initialData, isEditing = false }: AddMemberP
               <input type="file" id="image" accept="image/*" className="hidden" onChange={handleImageChange} />
             </div>
             {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mt-4">
+              Alt Tag
+            </label>
+            <input
+              type="text"
+              id="Alt Tag"
+              {...register("altTag")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
           </div>
 
           <div className="mt-6">

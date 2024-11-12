@@ -17,25 +17,33 @@ const MarineSectionSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  bannerVideo:{
-    type:String,
-    required:true
+  bannerVideo: {
+    type: String,
+    required: true
   },
-  bannerImage:{
-    type:String,
-    required:true
+  bannerImage: {
+    type: String,
+    required: true
   },
-  slug:{
-    type:String,
-    required:true
+  slug: {
+    type: String,
+    required: true
   },
-  metaDataTitle:{
-    type:String,
-    required:false
+  metaDataTitle: {
+    type: String,
+    required: false
   },
-  metaDataDesc:{
-    type:String,
-    required:false
+  metaDataDesc: {
+    type: String,
+    required: false
+  },
+  altTag: {
+    type: String,
+    required: false
+  },
+  altTagBanner: {
+    type: String,
+    required: false
   }
 });
 

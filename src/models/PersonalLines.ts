@@ -24,7 +24,11 @@ const PersonalLinesSchema = new mongoose.Schema({
   metaDataDesc:{
     type:String,
     required:false
-  }
+  },
+  altTag:{
+    type:String,
+    required:false
+}
   
 });
 
