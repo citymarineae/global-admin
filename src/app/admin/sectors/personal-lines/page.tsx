@@ -12,8 +12,9 @@ import { toast } from "sonner";
 type FormData = {
   title: string;
   content: string;
-  metaDataTitle:string;
-  metaDataDesc:string;
+  metaDataTitle: string;
+  metaDataDesc: string;
+  altTag: string;
 };
 
 const PersonalLines = () => {
@@ -42,8 +43,9 @@ const PersonalLines = () => {
 
     setValue("title", data.title);
     setValue("content", data.content);
-    setValue("metaDataTitle",data.metaDataTitle)
-    setValue("metaDataDesc",data.metaDataDesc)
+    setValue("metaDataTitle", data.metaDataTitle)
+    setValue("metaDataDesc", data.metaDataDesc)
+    setValue("altTag", data.altTag)
 
     if (data.image) {
       setPreviewImage(data.image as string);
@@ -122,8 +124,9 @@ const PersonalLines = () => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
-    formData.append("metaDataTitle",data.metaDataTitle);
-    formData.append("metaDataDesc",data.metaDataDesc);
+    formData.append("metaDataTitle", data.metaDataTitle);
+    formData.append("metaDataDesc", data.metaDataDesc);
+    formData.append("altTag", data.altTag);
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -278,6 +281,18 @@ const PersonalLines = () => {
                     <input type="file" id="image" accept="image/*" className="hidden" onChange={handleImageChange} />
                   </div>
                   {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
+                </div>
+
+                <div>
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                    Alt Tag
+                  </label>
+                  <input
+                    type="text"
+                    id="Alt Tag"
+                    {...register("altTag")}
+                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+                  />
                 </div>
 
                 <div>

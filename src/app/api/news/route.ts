@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     const slug = formData.get("slug") as string;
     const metaDataTitle = formData.get("metaDataTitle") as string;
     const metaDataDesc = formData.get("metaDataDesc") as string;
+    const altTag = formData.get("altTag") as string;
 
     if (!title || !brief || !content || !date || !image) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -51,7 +52,8 @@ export async function POST(req: NextRequest) {
       image: imagePath,
       slug,
       metaDataTitle,
-      metaDataDesc
+      metaDataDesc,
+      altTag
     });
 
     await news.save();

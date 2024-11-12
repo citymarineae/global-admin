@@ -20,6 +20,8 @@ type FormData = {
   slug: string;
   metaDataTitle:string;
   metaDataDesc:string;
+  altTag:string;
+  altTagBanner:string;
 };
 
 interface AddMarinePageProps {
@@ -34,6 +36,8 @@ interface AddMarinePageProps {
     slug?: string;
     metaDataTitle:string;
     metaDataDesc:string;
+    altTag:string;
+    altTagBanner:string;
   };
   isEditing?: boolean;
 }
@@ -66,6 +70,8 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
       setValue("subTitle", initialData.subTitle);
       setValue("metaDataTitle",initialData.metaDataTitle)
       setValue("metaDataDesc",initialData.metaDataDesc)
+      setValue("altTag",initialData.altTag)
+      setValue("altTagBanner",initialData.altTagBanner)
 
       if (initialData.slug) {
         setValue("slug", initialData.slug)
@@ -283,6 +289,8 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
     formData.append("slug", data.slug)
     formData.append("metaDataTitle",data.metaDataTitle)
     formData.append("metaDataDesc",data.metaDataDesc)
+    formData.append("altTag",data.altTag)
+    formData.append("altTagBanner",data.altTagBanner)
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -439,6 +447,18 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
             {bannerImageError && <p className="mt-1 text-sm text-red-600">{bannerImageError}</p>}
           </div>
 
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Alt Tag Banner
+            </label>
+            <input
+              type="text"
+              id="Alt Tag"
+              {...register("altTagBanner")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
 
 
           <div>
@@ -535,6 +555,18 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
               <input type="file" id="image" accept="image/*" className="hidden" onChange={handleImageChange} />
             </div>
             {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Alt Tag
+            </label>
+            <input
+              type="text"
+              id="Alt Tag"
+              {...register("altTag")}
+              className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            />
           </div>
 
 
