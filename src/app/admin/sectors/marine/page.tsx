@@ -285,6 +285,7 @@ const Marine = () => {
                     <input type="file" id="image" accept="image/*" className="hidden" onChange={handleImageChange} />
                   </div>
                   {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
+                  {<p className='mt-3'>Optimum resolution - 900x700</p>}
                 </div>
 
                 <div>

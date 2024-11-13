@@ -187,8 +187,11 @@ const AboutPage = () => {
                   <p className="mt-1 text-sm text-gray-600">No image to display</p>
                 </>
               )}
+              
             </div>
+            
           </div>
+
 
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
