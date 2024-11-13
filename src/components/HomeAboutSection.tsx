@@ -350,9 +350,9 @@ const HomeAboutSection = ({editMode}:{
             Edit Home
           </Link>}
         </div>
-        <form className="space-y-6 lg:flex lg:space-x-8 lg:space-y-0" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-6 lg:flex  lg:space-y-0 flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
         {/* Left column */}
-        <div className="lg:w-2/3 space-y-6">
+       
         <div>
           <div className='font-bold'>Banner Video</div>
           <div className='lg:flex gap-5'>
@@ -453,6 +453,8 @@ const HomeAboutSection = ({editMode}:{
           </div>
           </div>
 
+            <div className='lg:flex lg:gap-5  border-t-2 pt-4'> 
+          <div className="lg:w-2/3 space-y-6">
             <div className='font-bold'>About Section</div>
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
@@ -568,6 +570,7 @@ const HomeAboutSection = ({editMode}:{
               {editMode && <input type="file" id="image" accept="image/*" className="hidden" onChange={handleImageChange} />}
             </div>
             {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
+            {editMode && <p className='mt-3'>Optimum resolution - 900x700</p>}
           </div>
 
           <div>
@@ -593,6 +596,7 @@ const HomeAboutSection = ({editMode}:{
             </button>
           </div>}
         </div>
+        </div> 
       </form>
       </main>
   )

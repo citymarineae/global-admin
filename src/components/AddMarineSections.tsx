@@ -445,6 +445,7 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
               <input type="file" id="bannerImage" accept="image/*" className="hidden" onChange={handleBannerImageChange} />
             </div>
             {bannerImageError && <p className="mt-1 text-sm text-red-600">{bannerImageError}</p>}
+            {<p className='mt-3'>Optimum resolution - 900x700</p>}
           </div>
 
           <div>
@@ -555,6 +556,7 @@ export default function AddMarine({ initialData, isEditing = false }: AddMarineP
               <input type="file" id="image" accept="image/*" className="hidden" onChange={handleImageChange} />
             </div>
             {imageError && <p className="mt-1 text-sm text-red-600">{imageError}</p>}
+            {<p className='mt-3'>Optimum resolution - 900x700</p>}
           </div>
 
           <div>
