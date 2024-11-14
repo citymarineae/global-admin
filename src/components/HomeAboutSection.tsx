@@ -57,6 +57,12 @@ const HomeAboutSection = ({editMode}:{
     const [videoError2,setVideoError2]  = useState("")
     const [previewVideo2,setPreviewVideo2] = useState<null | string>("")
     const [videoFile2,setVideoFile2] = useState<null | File>(null)
+    const [videoPoster1, setVideoPoster1] = useState<File | null>(null);
+    const [videoPoster1Error, setVideoPoster1Error] = useState<string | null>(null);
+    const [videoPoster1Preview, setVideoPoster1Preview] = useState<string | null>(null);
+    const [videoPoster2, setVideoPoster2] = useState<File | null>(null);
+    const [videoPoster2Error, setVideoPoster2Error] = useState<string | null>(null);
+    const [videoPoster2Preview, setVideoPoster2Preview] = useState<string | null>(null);
 
     const router = useRouter()
   
@@ -80,6 +86,13 @@ const HomeAboutSection = ({editMode}:{
           }
           if(data.homeabout[0].bannerVideo2){
             setPreviewVideo2(data.homeabout[0].bannerVideo2 as string)
+          }
+
+          if (data.homeabout[0].videoPoster1) {
+            setVideoPoster1Preview(data.homeabout[0].videoPoster1 as string);
+          }
+          if (data.homeabout[0].videoPoster2) {
+            setVideoPoster2Preview(data.homeabout[0].videoPoster2 as string);
           }
         } catch (error) {
           console.error("Error fetching home about:", error);
@@ -273,6 +286,132 @@ const HomeAboutSection = ({editMode}:{
   
     }
 
+    const handleVideoPoster1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+  
+      if (file) {
+        // Validate the image file type
+        const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        if (!validImageTypes.includes(file.type)) {
+          setVideoPoster1Error("Please select an image file (JPEG, PNG, or GIF)");
+          return;
+        }
+  
+        // Validate the image file size
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+          setVideoPoster1Error("Image file size must not exceed 10MB");
+          return;
+        }
+  
+        setVideoPoster1(file);
+  
+        setVideoPoster1Error(null); // Reset error message if there was one
+  
+        // Generate the preview image
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setVideoPoster1Preview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setVideoPoster1Preview(null);
+        setVideoPoster1(null);
+      }
+    };
+
+    const onDropVideoPoster1 = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        // Validate the image file type
+        const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        if (!validImageTypes.includes(file.type)) {
+          setVideoPoster1Error("Please select an image file (JPEG, PNG, or GIF)");
+          return;
+        }
+  
+        // Validate the image file size
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+          setVideoPoster1Error("Image file size must not exceed 10MB");
+          return;
+        }
+  
+        setVideoPoster1(file);
+  
+        setVideoPoster1Error(null); // Reset error message if there was one;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setVideoPoster1Preview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    }, []);
+
+    const handleVideoPoster2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+  
+      if (file) {
+        // Validate the image file type
+        const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        if (!validImageTypes.includes(file.type)) {
+          setVideoPoster2Error("Please select an image file (JPEG, PNG, or GIF)");
+          return;
+        }
+  
+        // Validate the image file size
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+          setVideoPoster2Error("Image file size must not exceed 10MB");
+          return;
+        }
+  
+        setVideoPoster2(file);
+  
+        setVideoPoster2Error(null); // Reset error message if there was one
+  
+        // Generate the preview image
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setVideoPoster2Preview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setVideoPoster2Preview(null);
+        setVideoPoster2(null);
+      }
+    };
+
+    const onDropVideoPoster2 = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        // Validate the image file type
+        const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        if (!validImageTypes.includes(file.type)) {
+          setVideoPoster2Error("Please select an image file (JPEG, PNG, or GIF)");
+          return;
+        }
+  
+        // Validate the image file size
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+          setVideoPoster2Error("Image file size must not exceed 10MB");
+          return;
+        }
+  
+        setVideoPoster2(file);
+  
+        setVideoPoster2Error(null); // Reset error message if there was one;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setVideoPoster2Preview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    }, []);
+
 
     const onSubmit = async (data: FormData) => {
       let bannerVideoPath1:Promise<string | false> | string | boolean;
@@ -304,6 +443,14 @@ const HomeAboutSection = ({editMode}:{
         if(bannerVideoPath2){
             formData.append("bannerVideo2",bannerVideoPath2)
         }
+      }
+
+      if (videoPoster1) {
+        formData.append("videoPoster1", videoPoster1);
+      }
+
+      if (videoPoster2) {
+        formData.append("videoPoster2", videoPoster2);
       }
   
       try {
@@ -451,6 +598,121 @@ const HomeAboutSection = ({editMode}:{
             {videoError2 && <p className="mt-1 text-sm text-red-600">{videoError2}</p>}
           </div>
           </div>
+          </div>
+
+              <div className='lg:flex w-full gap-5'>
+          <div className='lg:w-1/2'>
+            <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
+              Video Poster 1
+            </label>
+            <div
+              className={`w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center ${editMode ? "cursor-pointer" : ""} overflow-hidden`}
+              onDrop={onDropVideoPoster1}
+              onDragOver={(e) => e.preventDefault()}
+              onClick={() => document?.getElementById("videoposter1")?.click()}
+            >
+              {videoPoster1Preview ? (
+                <div className="relative w-full h-full">
+                  <Image src={videoPoster1Preview} alt="Preview" layout="fill" objectFit="cover" />
+                  {editMode && <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setVideoPoster1Preview(null); // Clear the preview image
+                      setVideoPoster1(null);
+                    }}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>}
+                </div>
+              ) : (
+                <>
+                  <svg
+                    className="mx-auto h-12 w-12 text-gray-400"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 48 48"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <p className="mt-1 text-sm text-gray-600">Drag and drop an image here, or click to select a file</p>
+                </>
+              )}
+              {editMode && <input type="file" id="videoposter1" accept="image/*" className="hidden" onChange={handleVideoPoster1Change} />}
+            </div>
+            {videoPoster1Error && <p className="mt-1 text-sm text-red-600">{videoPoster1Error}</p>}
+            {editMode && <p className='mt-3'>Optimum resolution - 900x700</p>}
+          </div>
+
+          <div className='lg:w-1/2'>
+            <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
+              Video Poster 2
+            </label>
+            <div
+              className={`w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center ${editMode ? "cursor-pointer" : ""} overflow-hidden`}
+              onDrop={onDropVideoPoster2}
+              onDragOver={(e) => e.preventDefault()}
+              onClick={() => document?.getElementById("videoposter2")?.click()}
+            >
+              {videoPoster2Preview ? (
+                <div className="relative w-full h-full">
+                  <Image src={videoPoster2Preview} alt="Preview" layout="fill" objectFit="cover" />
+                  {editMode && <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setVideoPoster2Preview(null); // Clear the preview image
+                      setVideoPoster2(null);
+                    }}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>}
+                </div>
+              ) : (
+                <>
+                  <svg
+                    className="mx-auto h-12 w-12 text-gray-400"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 48 48"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <p className="mt-1 text-sm text-gray-600">Drag and drop an image here, or click to select a file</p>
+                </>
+              )}
+              {editMode && <input type="file" id="videoposter2" accept="image/*" className="hidden" onChange={handleVideoPoster2Change} />}
+            </div>
+            {videoPoster2Error && <p className="mt-1 text-sm text-red-600">{videoPoster2Error}</p>}
+            {editMode && <p className='mt-3'>Optimum resolution - 900x700</p>}
+          </div>
+
           </div>
 
             <div className='lg:flex lg:gap-5  border-t-2 pt-4'> 
