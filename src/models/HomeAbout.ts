@@ -32,6 +32,14 @@ const HomeAboutSchema = new mongoose.Schema({
     bannerVideo2:{
         type:String,
         required:true
+    },
+    videoPoster1:{
+        type:String,
+        required:true
+    },
+    videoPoster2:{
+        type:String,
+        required:true
     }
 })
 
