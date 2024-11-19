@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(formatDbResponse(team));
     } else { 
       // Fetch all news items
-      const members = await Team.find().sort({ date: -1 }); // Sort by date, newest first
+      const members = await Team.find().sort({ index:1 }); // Sort by date, newest first
       return NextResponse.json(formatDbResponse(members));
     }
   } catch (error) {

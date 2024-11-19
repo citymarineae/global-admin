@@ -47,7 +47,11 @@ const MarineSections = () => {
       if (result.destination) {
         items.splice(result.destination.index, 0, reOrderedItems)
       }
-      setList(items)
+      const updatedList = items.map((item,index)=>({
+        ...item,
+        index:index+1
+      }))
+      setList(updatedList)
     }
   }
 

@@ -116,7 +116,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(formatDbResponse(marineSections));
     } else {
       // Fetch all news items
-      const marineSections = await MarineSection.find().sort({ date: -1 }); // Sort by date, newest first
+      const marineSections = await MarineSection.find().sort({ index: 1 }); // Sort by date, newest first
       return NextResponse.json({ marineSections: formatDbResponse(marineSections) });
     }
   } catch (error) {

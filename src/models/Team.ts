@@ -44,6 +44,10 @@ const TeamSchema = new mongoose.Schema({
   altTag:{
     type:String,
     required:false
+},
+index:{
+  type:Number,
+  required:false
 }
 });
 

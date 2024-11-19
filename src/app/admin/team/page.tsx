@@ -17,6 +17,7 @@ interface Member {
   email: string;
   phone: string;
   image: string;
+  index:number
 }
 
 const Team = () => {
@@ -48,7 +49,13 @@ const Team = () => {
       if (result.destination) {
         items.splice(result.destination.index, 0, reOrderedItems)
       }
-      setMembers(items)
+      
+      const updatedItems = items.map((item, index) => ({
+        ...item,         // Retain the existing properties of the item
+        index: index + 1,  // Assign position starting from 1
+      }));
+
+      setMembers(updatedItems)
     }
   }
 
