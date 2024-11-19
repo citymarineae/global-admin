@@ -44,6 +44,10 @@ const MarineSectionSchema = new mongoose.Schema({
   altTagBanner: {
     type: String,
     required: false
+  },
+  index:{
+    type:Number,
+    required:false
   }
 });
 
