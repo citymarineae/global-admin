@@ -13,7 +13,7 @@ import { useParams } from 'next/navigation'
 type FormData = {
     id:string
     title:string
-    subTitle:string
+    subTitle?:string
     videoPoster:string;
     bannerVideo:string;
 }
@@ -207,7 +207,10 @@ const AddBanner = ({editMode}:{editMode?:boolean}) => {
         setIsSubmitting(true);
         const formData = new FormData();
         formData.append("title", data.title);
-        formData.append("subTitle", data.subTitle);
+        
+        if(data.subTitle){
+          formData.append("subTitle", data.subTitle);
+        }
     
         if (imageFile) {
           formData.append("videoPoster", imageFile);
@@ -284,10 +287,10 @@ const AddBanner = ({editMode}:{editMode?:boolean}) => {
             <input
               type="text"
               id="title"
-              {...register("subTitle", { required: "Sub title is required" })}
+              {...register("subTitle")}
               className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
             />
-            {errors.subTitle && <p className="mt-1 text-sm text-red-600">{errors.subTitle.message}</p>}
+            
           </div>
 
         </div>

@@ -7,7 +7,7 @@ const HomeBanner = new mongoose.Schema({
     },
     subTitle:{
         type:String,
-        required:true
+        required:false
     },
     altTag:{
         type:String,
