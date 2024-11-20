@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
   
       // Check if a new image is provided
       const newImage = formData.get("videoPoster") as File | null;
+      const subTitle = formData.get("subTitle") as string
   
       console.log("Data",updatedData)
   
@@ -45,6 +46,13 @@ export async function POST(req: NextRequest) {
         // to prevent overwriting the existing image path with null
         delete updatedData.videoPoster;
       }
+
+      if(!subTitle){
+        updatedData.subTitle = ""
+      }
+      
+
+      console.log("Final",updatedData)
   
       const homebanner = await HomeBanner.findByIdAndUpdate(id, updatedData, { new: true });
       if (!homebanner) {
