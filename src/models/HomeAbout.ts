@@ -25,22 +25,6 @@ const HomeAboutSchema = new mongoose.Schema({
         type:String,
         required:false
     },
-    bannerVideo1:{
-        type:String,
-        required:true
-    },
-    bannerVideo2:{
-        type:String,
-        required:true
-    },
-    videoPoster1:{
-        type:String,
-        required:true
-    },
-    videoPoster2:{
-        type:String,
-        required:true
-    }
 })
 
 export default mongoose.models.HomeAbout || mongoose.model('HomeAbout',HomeAboutSchema)
