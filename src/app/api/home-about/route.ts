@@ -36,12 +36,10 @@ export async function POST(req: NextRequest) {
 
     // Check if a new image is provided
     const newImage = formData.get("image") as File | null;
-    const videoPoster1 = formData.get("videoPoster1") as File | null;
-    const videoPoster2 = formData.get("videoPoster2") as File | null;
+    
 
     console.log(newImage)
-    console.log(videoPoster1)
-    console.log(videoPoster2)
+
 
     if (newImage && newImage instanceof File) {
 
@@ -74,28 +72,6 @@ export async function POST(req: NextRequest) {
       delete updatedData.image;
     }
 
-    if (videoPoster1 && videoPoster1 instanceof File && videoPoster2 && videoPoster2 instanceof File) {
-      try {
-        const videoPoster1FileName = `${Date.now()}-${videoPoster1.name || "image"}`;
-        const dropboxPathPoster1 = `/home-about-videoposter/${videoPoster1FileName}`;
-
-        const videoPoster2FileName = `${Date.now()}-${videoPoster2.name || "image"}`;
-        const dropboxPathPoster2 = `/home-about-videoposter/${videoPoster2FileName}`;
-
-        const videoPoster1Path = await uploadToDropbox(videoPoster1, dropboxPathPoster1)
-        const videoPoster2Path = await uploadToDropbox(videoPoster2, dropboxPathPoster2)
-
-        updatedData.videoPoster1 = videoPoster1Path
-        updatedData.videoPoster2 = videoPoster2Path
-
-      } catch (error) {
-        console.error("Error uploading video banner to Dropbox:", error);
-        return NextResponse.json({ error: "Error uploading new image" }, { status: 500 });
-      }
-    }else{
-      delete updatedData.videoPoster1
-      delete updatedData.videoPoster2
-    }
 
     const homeAbout = await HomeAbout.findByIdAndUpdate(id, updatedData, { new: true });
     if (!homeAbout) {

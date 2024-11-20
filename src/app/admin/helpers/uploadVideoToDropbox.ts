@@ -1,12 +1,13 @@
 
 import { uploadToDropbox } from "@/lib/connectDropbox";
 
-export const uploadVideoToDropBox = async(bannerVideo:File) =>{
+export const uploadVideoToDropBox = async(bannerVideo:File,sectionName?:string) =>{
     try {
         
         let bannerVideoPath = "";
+        let bannerVideoDropboxPath = "";
         const bannerVideoName = `${Date.now()}-${bannerVideo.name || "bannerVideo"}`
-        const bannerVideoDropboxPath = `/marineSectionBannerVideo/${bannerVideoName}`;
+        bannerVideoDropboxPath = sectionName ? sectionName+"/" + bannerVideoName : `/marineSectionBannerVideo/${bannerVideoName}`;
         bannerVideoPath = await uploadToDropbox(bannerVideo,bannerVideoDropboxPath);
         console.log("Banner video uploaded to Dropbox:", bannerVideoDropboxPath);
         if(bannerVideoPath){
